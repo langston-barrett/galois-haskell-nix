@@ -110,15 +110,13 @@ let
     }) { };
 
     macaw-base         = macaw "base";
-    # Broken: llvm-pretty: No instance for (Semigroup Module)
-    macaw-symbolic     = macaw "symbolic";
+    macaw-symbolic     = macaw "symbolic"; # Broken: llvm-pretty: No instance for (Semigroup Module)
     macaw-x86          = macaw "x86";
-    macaw-x86-symbolic = macaw "x86_symbolic";
+    macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: llvm-pretty: No instance for (Semigroup Module)
 
     # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
     # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
     # hpack = haskellPackagesNew.hpack_0_29_6;
-
     # cabal2nix = pkgs_old.haskell.lib.dontCheck haskellPackagesOld.cabal2nix;
   };
 

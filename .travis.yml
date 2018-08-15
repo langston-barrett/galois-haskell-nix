@@ -12,8 +12,6 @@ env:
   - PKG=binary-symbols
   - PKG=galois-dwarf
   - PKG=macaw-base
-  - PKG=macaw-symbolic
   - PKG=macaw-x86
-  - PKG=macaw-x86-symbolic
 script:
   - nix-build -A "haskellPackages.$PKG"

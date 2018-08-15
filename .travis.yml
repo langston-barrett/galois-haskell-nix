@@ -1,0 +1,28 @@
+language: nix
+
+# TODO: multiple versions of GHC, nixpkgs
+
+env:
+  - PKG=parameterized-utils
+  - PKG=saw-core
+  - PKG=saw-core-aig
+  - PKG=saw-core-sbv
+  - PKG=crucible
+  - PKG=crucible-jvm
+  - PKG=crucible-llvm
+  - PKG=crucible-saw
+  - PKG=what4
+  - PKG=cryptol-verifier
+  - PKG=elf-edit
+  - PKG=flexdis86
+  - PKG=binary-symbols
+  - PKG=galois-dwarf
+  - PKG=jvm-verifier
+  - PKG=llvm-verifier
+  - PKG=macaw-base
+  - PKG=macaw-symbolic
+  - PKG=macaw-x86
+  - PKG=macaw-x86-symbolic
+
+script:
+  - nix-build -A "haskellPackages.$PKG"

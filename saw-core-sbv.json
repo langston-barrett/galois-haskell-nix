@@ -1,0 +1,7 @@
+{
+  "url": "ssh://git@github.com/GaloisInc/saw-core-sbv",
+  "rev": "0f7c95cf9e006cbf5e596171851bd0a24abf0bdb",
+  "date": "2018-08-07T14:33:45-07:00",
+  "sha256": "0jm0g4nnyflzpw58fh2fjz6w00m6nsdwzay8zskfh0il3v7mb7wh",
+  "fetchSubmodules": true
+}

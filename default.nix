@@ -109,6 +109,11 @@ let
       json = ./llvm-verifier.json;
     }) { };
 
+    llvm-pretty = hmk (mkpkg {
+      name = "llvm-pretty";
+      json = ./llvm-pretty.json;
+    }) { };
+
     macaw-base         = macaw "base";
     macaw-symbolic     = macaw "symbolic"; # Broken: llvm-pretty: No instance for (Semigroup Module)
     macaw-x86          = macaw "x86";

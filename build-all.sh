@@ -19,6 +19,7 @@ to_build=(
   galois-dwarf
   # jvm-verifier
   # llvm-verifier
+  llvm-pretty
   macaw-base
   # macaw-symbolic
   macaw-x86

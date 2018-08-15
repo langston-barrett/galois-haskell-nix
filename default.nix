@@ -21,15 +21,16 @@ let
         withSubdirs "macaw" ./macaw.json (suffix: suffix);
     in rec {
 
-    # abcBridge = haskellPackagesOld.abcBridge.overrideScope
-    #   (self: super: { Cabal = haskellPackagesNew.Cabal_2_2_0_1; });
+    abcBridge = haskellPackagesOld.abcBridge.overrideScope
+      (self: super: { Cabal = haskellPackagesNew.Cabal_2_2_0_1; });
 
-    # saw = hmk (mkpkg {
-    #   repo = "saw-script";
-    #   name = "saw";
-    #   json = ./saw-script.json;
-    #   }) { };
+    saw = (hmk (mkpkg {
+      repo = "saw-script";
+      name = "saw";
+      json = ./saw-script.json;
+      }) { });
 
+    # The version on Hackage should work, its just not in nixpkgs yet
     parameterized-utils = hmk (mkpkg {
       name = "parameterized-utils";
       json = ./parameterized-utils.json;
@@ -57,8 +58,8 @@ let
       }) { };
 
     crucible      = crucibleF "";
-    crucible-jvm  = crucibleF "jvm";
-    crucible-llvm = crucibleF "llvm";
+    crucible-jvm  = crucibleF "jvm"; # Broken
+    crucible-llvm = crucibleF "llvm"; # Broken
     crucible-saw  = crucibleF "saw";
 
     what4 = hmk (mkpkg {
@@ -68,6 +69,7 @@ let
       subdir = "what4";
     }) { };
 
+    # Broken: Cryptol needs base-compat < 0.10
     cryptol-verifier = hmk (mkpkg {
       name = "cryptol-verifier";
       json = ./cryptol-verifier.json;
@@ -95,27 +97,31 @@ let
       json = ./dwarf.json;
     }) { };
 
+    # Broken
     jvm-verifier = hmk (mkpkg {
       name = "jvm-verifier";
       json = ./jvm-verifier.json;
     }) { };
 
+    # Broken, cryptol-verifier
     llvm-verifier = hmk (mkpkg {
       name = "llvm-verifier";
       json = ./llvm-verifier.json;
     }) { };
 
     macaw-base         = macaw "base";
+    # Broken: llvm-pretty: No instance for (Semigroup Module)
     macaw-symbolic     = macaw "symbolic";
     macaw-x86          = macaw "x86";
     macaw-x86-symbolic = macaw "x86_symbolic";
 
     # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
     # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
-    hpack = haskellPackagesNew.hpack_0_29_6;
+    # hpack = haskellPackagesNew.hpack_0_29_6;
 
-    cabal2nix = pkgs_old.haskell.lib.dontCheck haskellPackagesOld.cabal2nix;
+    # cabal2nix = pkgs_old.haskell.lib.dontCheck haskellPackagesOld.cabal2nix;
   };
+
 
   config = {
     allowUnfree = true; # https://github.com/GaloisInc/flexdis86/pull/1

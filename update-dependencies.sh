@@ -18,7 +18,7 @@ to_fetch=(
   galois-dwarf
   jvm-verifier
   llvm-verifier
-  llvm-pretty
+  # llvm-pretty
   macaw
 )
 

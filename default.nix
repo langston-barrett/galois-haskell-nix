@@ -19,7 +19,7 @@ let
           (suffix: "crucible" + (if suffix == "" then "" else "-" + suffix));
       macaw =
         withSubdirs "macaw" ./macaw.json (suffix: suffix);
-    in rec {
+    in {
 
     abcBridge = haskellPackagesOld.abcBridge.overrideScope
       (self: super: { Cabal = haskellPackagesNew.Cabal_2_2_0_1; });
@@ -69,6 +69,9 @@ let
       subdir = "what4";
     }) { };
 
+    # Cryptol needs base-compat < 0.10, version is 0.10.4
+    cryptol = pkgs_old.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
+
     # Broken: Cryptol needs base-compat < 0.10
     cryptol-verifier = hmk (mkpkg {
       name = "cryptol-verifier";
@@ -95,6 +98,12 @@ let
     galois-dwarf = hmk (mkpkg {
       name = "dwarf";
       json = ./dwarf.json;
+    }) { };
+
+    # Hackage version broken
+    jvm-parser = hmk (mkpkg {
+      name = "jvm-parser";
+      json = ./jvm-parser.json;
     }) { };
 
     # Broken

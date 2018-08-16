@@ -17,6 +17,7 @@ to_build=(
   flexdis86
   binary-symbols
   galois-dwarf
+  jvm-parser
   # jvm-verifier
   # llvm-verifier
   llvm-pretty

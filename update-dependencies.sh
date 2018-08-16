@@ -15,7 +15,8 @@ to_fetch=(
   cryptol-verifier
   elf-edit
   flexdis86
-  galois-dwarf
+  dwarf
+  jvm-parser
   jvm-verifier
   llvm-verifier
   # llvm-pretty

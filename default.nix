@@ -72,7 +72,7 @@ let
     # Cryptol needs base-compat < 0.10, version is 0.10.4
     cryptol = pkgs_old.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
 
-    # Broken: Cryptol needs base-compat < 0.10
+    # Broken: abcBridge
     cryptol-verifier = hmk (mkpkg {
       name = "cryptol-verifier";
       json = ./cryptol-verifier.json;

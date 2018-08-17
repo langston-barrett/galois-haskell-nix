@@ -1,0 +1,7 @@
+{
+  "url": "ssh://git@github.com/GaloisInc/llvm-pretty",
+  "rev": "4d66564ee529756853a9b738acf8d388f0135743",
+  "date": "2018-02-28T10:54:02-08:00",
+  "sha256": "0gjfh54kdl0aqh398mims6dajmyvmli3hf6s4dm586sj87r02nvq",
+  "fetchSubmodules": true
+}

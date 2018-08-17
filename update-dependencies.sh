@@ -4,6 +4,8 @@ set -e
 
 # This doesn't exactly match to_build, because multiple projects are in the same
 # git repo.
+#
+# Additionally, abcBridge is handled manually.
 to_fetch=(
   parameterized-utils
   saw-script

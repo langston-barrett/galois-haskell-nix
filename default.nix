@@ -21,8 +21,8 @@ let
         withSubdirs "macaw" ./macaw.json (suffix: suffix);
     in {
 
-    abcBridge = haskellPackagesOld.abcBridge.overrideScope
-      (self: super: { Cabal = haskellPackagesNew.Cabal_2_2_0_1; });
+    # Need newer version, to override cabal2nix's inputs
+    abcBridge = haskellPackagesNew.callPackage ./abcBridge.nix { };
 
     saw = (hmk (mkpkg {
       repo = "saw-script";
@@ -72,7 +72,6 @@ let
     # Cryptol needs base-compat < 0.10, version is 0.10.4
     cryptol = pkgs_old.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
 
-    # Broken: abcBridge
     cryptol-verifier = hmk (mkpkg {
       name = "cryptol-verifier";
       json = ./cryptol-verifier.json;

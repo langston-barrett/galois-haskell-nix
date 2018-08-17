@@ -3,7 +3,7 @@
 set -e
 
 to_build=(
-  # abcBridge
+  abcBridge
   cryptol
   # parameterized-utils
   # saw
@@ -13,7 +13,7 @@ to_build=(
   crucible
   crucible-saw
   what4
-  # cryptol-verifier
+  cryptol-verifier
   elf-edit
   flexdis86
   binary-symbols

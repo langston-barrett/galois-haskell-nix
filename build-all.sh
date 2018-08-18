@@ -21,11 +21,11 @@ to_build=(
   jvm-parser
   # jvm-verifier
   # llvm-verifier
-  # llvm-pretty
+  llvm-pretty
   macaw-base
-  # macaw-symbolic
+  macaw-symbolic
   macaw-x86
-  # macaw-x86-symbolic
+  macaw-x86-symbolic
 )
 
 # Write .travis.yml

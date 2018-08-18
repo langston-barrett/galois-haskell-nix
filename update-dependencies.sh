@@ -5,7 +5,7 @@ set -e
 # This doesn't exactly match to_build, because multiple projects are in the same
 # git repo.
 #
-# Additionally, abcBridge is handled manually.
+# Additionally, abcBridge and llvm-pretty are handled manually.
 to_fetch=(
   parameterized-utils
   saw-script
@@ -21,7 +21,6 @@ to_fetch=(
   jvm-parser
   jvm-verifier
   llvm-verifier
-  # llvm-pretty
   macaw
 )
 

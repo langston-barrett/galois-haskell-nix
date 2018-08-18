@@ -9,6 +9,8 @@ env:
   - GHC=ghc843 PKG=saw-core-sbv
   - GHC=ghc843 PKG=crucible
   - GHC=ghc843 PKG=crucible-saw
+  - GHC=ghc843 PKG=crucible-llvm
+  - GHC=ghc843 PKG=crucible-jvm
   - GHC=ghc843 PKG=what4
   - GHC=ghc843 PKG=cryptol-verifier
   - GHC=ghc843 PKG=elf-edit
@@ -16,6 +18,7 @@ env:
   - GHC=ghc843 PKG=binary-symbols
   - GHC=ghc843 PKG=galois-dwarf
   - GHC=ghc843 PKG=jvm-parser
+  - GHC=ghc843 PKG=llvm-pretty
   - GHC=ghc843 PKG=macaw-base
   - GHC=ghc843 PKG=macaw-x86
   - GHC=ghc822 PKG=abcBridge
@@ -25,6 +28,8 @@ env:
   - GHC=ghc822 PKG=saw-core-sbv
   - GHC=ghc822 PKG=crucible
   - GHC=ghc822 PKG=crucible-saw
+  - GHC=ghc822 PKG=crucible-llvm
+  - GHC=ghc822 PKG=crucible-jvm
   - GHC=ghc822 PKG=what4
   - GHC=ghc822 PKG=cryptol-verifier
   - GHC=ghc822 PKG=elf-edit
@@ -32,6 +37,7 @@ env:
   - GHC=ghc822 PKG=binary-symbols
   - GHC=ghc822 PKG=galois-dwarf
   - GHC=ghc822 PKG=jvm-parser
+  - GHC=ghc822 PKG=llvm-pretty
   - GHC=ghc822 PKG=macaw-base
   - GHC=ghc822 PKG=macaw-x86
 script:

@@ -5,8 +5,6 @@
 # , abc
 }:
 let
-  fromJson = builtins.fromJSON (builtins.readFile ./abcBridge.json);
-
   # For some reason, nix-prefetch-git --deepClone doesn't compute the
   # correct SHA256, so we just handle this one manually.
   src = fetchgit {

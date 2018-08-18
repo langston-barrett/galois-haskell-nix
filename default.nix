@@ -59,7 +59,8 @@ let
 
     crucible      = crucibleF "";
     crucible-jvm  = crucibleF "jvm"; # Broken
-    crucible-llvm = crucibleF "llvm"; # Broken
+    # fixed! GHC 8.4.3 bug
+    crucible-llvm = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
     crucible-saw  = crucibleF "saw";
 
     what4 = hmk (mkpkg {
@@ -111,22 +112,22 @@ let
       json = ./jvm-verifier.json;
     }) { };
 
-    # Broken, cryptol-verifier
+    # Broken: llvm-pretty
     llvm-verifier = hmk (mkpkg {
       name = "llvm-verifier";
       json = ./llvm-verifier.json;
     }) { };
 
-    # Broken: No instance for (Semigroup Module)
     llvm-pretty = hmk (mkpkg {
       name = "llvm-pretty";
+      owner = "elliottt";
       json = ./llvm-pretty.json;
     }) { };
 
     macaw-base         = macaw "base";
-    macaw-symbolic     = macaw "symbolic"; # Broken: llvm-pretty
+    macaw-symbolic     = macaw "symbolic"; # Broken?: llvm-pretty
     macaw-x86          = macaw "x86";
-    macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: llvm-pretty
+    macaw-x86-symbolic = macaw "x86_symbolic"; # Broken?: llvm-pretty
 
     # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
     # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080

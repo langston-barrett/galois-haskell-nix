@@ -18,7 +18,9 @@ env:
   - GHC=ghc843 PKG=binary-symbols
   - GHC=ghc843 PKG=galois-dwarf
   - GHC=ghc843 PKG=jvm-parser
+  - GHC=ghc843 PKG=llvm-verifier
   - GHC=ghc843 PKG=llvm-pretty
+  - GHC=ghc843 PKG=llvm-pretty-bc-parser
   - GHC=ghc843 PKG=macaw-base
   - GHC=ghc843 PKG=macaw-x86
   - GHC=ghc822 PKG=abcBridge
@@ -37,7 +39,9 @@ env:
   - GHC=ghc822 PKG=binary-symbols
   - GHC=ghc822 PKG=galois-dwarf
   - GHC=ghc822 PKG=jvm-parser
+  - GHC=ghc822 PKG=llvm-verifier
   - GHC=ghc822 PKG=llvm-pretty
+  - GHC=ghc822 PKG=llvm-pretty-bc-parser
   - GHC=ghc822 PKG=macaw-base
   - GHC=ghc822 PKG=macaw-x86
 script:

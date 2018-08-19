@@ -112,7 +112,11 @@ let
       json = ./jvm-verifier.json;
     }) { };
 
-    # Broken: llvm-pretty
+    llvm-pretty-bc-parser = hmk (mkpkg {
+      name = "llvm-pretty-bc-parser";
+      json = ./llvm-pretty-bc-parser.json;
+    }) { };
+
     llvm-verifier = hmk (mkpkg {
       name = "llvm-verifier";
       json = ./llvm-verifier.json;

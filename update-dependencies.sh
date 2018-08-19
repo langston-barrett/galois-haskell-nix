@@ -20,6 +20,7 @@ to_fetch=(
   dwarf
   jvm-parser
   jvm-verifier
+  llvm-pretty-bc-parser
   llvm-verifier
   macaw
 )

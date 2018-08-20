@@ -26,9 +26,9 @@ to_build=(
   llvm-pretty
   llvm-pretty-bc-parser
   macaw-base
-  # macaw-symbolic
+  macaw-symbolic
   macaw-x86
-  # macaw-x86-symbolic
+  macaw-x86-symbolic
 )
 
 # Write .travis.yml

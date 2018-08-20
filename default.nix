@@ -24,6 +24,7 @@ let
     # Need newer version, to override cabal2nix's inputs
     abcBridge = haskellPackagesNew.callPackage ./abcBridge.nix { };
 
+    # Broken: depends on everything else
     saw = (hmk (mkpkg {
       repo = "saw-script";
       name = "saw";
@@ -60,6 +61,8 @@ let
     crucible      = crucibleF "";
     crucible-jvm  = crucibleF "jvm"; # Broken
     # fixed! GHC 8.4.3 bug
+    # This package can't be built with profiling on with GHC 8.4.3.
+    # This change has to be propagated to all the packages that depend on it.
     crucible-llvm = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
     crucible-saw  = crucibleF "saw";
 
@@ -129,9 +132,11 @@ let
     }) { };
 
     macaw-base         = macaw "base";
-    macaw-symbolic     = macaw "symbolic"; # Broken?: llvm-pretty
+    # macaw-symbolic     = macaw "symbolic"; # Broken: crucible-llvm
+    macaw-symbolic = haskellPackagesNew.callPackage ./macaw-symbolic.nix { };
     macaw-x86          = macaw "x86";
-    macaw-x86-symbolic = macaw "x86_symbolic"; # Broken?: llvm-pretty
+    # macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: crucible-llvm
+    macaw-x86-symbolic = haskellPackagesNew.callPackage ./macaw-x86-symbolic.nix { };
 
     # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
     # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080

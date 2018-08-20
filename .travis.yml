@@ -22,6 +22,7 @@ env:
   - GHC=ghc843 PKG=llvm-pretty
   - GHC=ghc843 PKG=llvm-pretty-bc-parser
   - GHC=ghc843 PKG=macaw-base
+  - GHC=ghc843 PKG=macaw-symbolic
   - GHC=ghc843 PKG=macaw-x86
   - GHC=ghc822 PKG=abcBridge
   - GHC=ghc822 PKG=cryptol
@@ -43,6 +44,7 @@ env:
   - GHC=ghc822 PKG=llvm-pretty
   - GHC=ghc822 PKG=llvm-pretty-bc-parser
   - GHC=ghc822 PKG=macaw-base
+  - GHC=ghc822 PKG=macaw-symbolic
   - GHC=ghc822 PKG=macaw-x86
 script:
   - travis_wait 120 nix-build --arg compiler \"$GHC\" -A "haskellPackages.$PKG"

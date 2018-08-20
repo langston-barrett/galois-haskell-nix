@@ -24,6 +24,7 @@ env:
   - GHC=ghc843 PKG=macaw-base
   - GHC=ghc843 PKG=macaw-symbolic
   - GHC=ghc843 PKG=macaw-x86
+  - GHC=ghc843 PKG=macaw-x86-symbolic
   - GHC=ghc822 PKG=abcBridge
   - GHC=ghc822 PKG=cryptol
   - GHC=ghc822 PKG=saw-core
@@ -46,6 +47,7 @@ env:
   - GHC=ghc822 PKG=macaw-base
   - GHC=ghc822 PKG=macaw-symbolic
   - GHC=ghc822 PKG=macaw-x86
+  - GHC=ghc822 PKG=macaw-x86-symbolic
 script:
   - travis_wait 120 nix-build --arg compiler \"$GHC\" -A "haskellPackages.$PKG"
 matrix:

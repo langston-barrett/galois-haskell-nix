@@ -24,6 +24,7 @@ let
     # Need newer version, to override cabal2nix's inputs
     abcBridge = haskellPackagesNew.callPackage ./abcBridge.nix { };
 
+    # Broken: depends on everything else
     saw = (hmk (mkpkg {
       repo = "saw-script";
       name = "saw";
@@ -59,7 +60,10 @@ let
 
     crucible      = crucibleF "";
     crucible-jvm  = crucibleF "jvm"; # Broken
-    crucible-llvm = crucibleF "llvm"; # Broken
+    # fixed! GHC 8.4.3 bug
+    # This package can't be built with profiling on with GHC 8.4.3.
+    # This change has to be propagated to all the packages that depend on it.
+    crucible-llvm = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
     crucible-saw  = crucibleF "saw";
 
     what4 = hmk (mkpkg {
@@ -111,22 +115,28 @@ let
       json = ./jvm-verifier.json;
     }) { };
 
-    # Broken, cryptol-verifier
+    llvm-pretty-bc-parser = hmk (mkpkg {
+      name = "llvm-pretty-bc-parser";
+      json = ./llvm-pretty-bc-parser.json;
+    }) { };
+
     llvm-verifier = hmk (mkpkg {
       name = "llvm-verifier";
       json = ./llvm-verifier.json;
     }) { };
 
-    # Broken: No instance for (Semigroup Module)
     llvm-pretty = hmk (mkpkg {
       name = "llvm-pretty";
+      owner = "elliottt";
       json = ./llvm-pretty.json;
     }) { };
 
     macaw-base         = macaw "base";
-    macaw-symbolic     = macaw "symbolic"; # Broken: llvm-pretty
+    # macaw-symbolic     = macaw "symbolic"; # Broken: crucible-llvm
+    macaw-symbolic = haskellPackagesNew.callPackage ./macaw-symbolic.nix { };
     macaw-x86          = macaw "x86";
-    macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: llvm-pretty
+    # macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: crucible-llvm
+    macaw-x86-symbolic = haskellPackagesNew.callPackage ./macaw-x86-symbolic.nix { };
 
     # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
     # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080

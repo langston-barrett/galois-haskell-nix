@@ -44,6 +44,19 @@ for ghc in 843 822; do
   done
 done
 cat << EOF >> .travis.yml
+# https://github.com/travis-ci/travis-ci/issues/6301
+# https://github.com/facebook/react/pull/2000
+# https://github.com/ah-/anne-key/pull/3
+before_install:
+  - |
+      set -e
+      # fail loudly when force-pushed
+      MODIFIED_FILES=\$(git diff --name-only \$TRAVIS_COMMIT_RANGE)
+      # waiting for native solution https://github.com/travis-ci/travis-ci/issues/6301
+      if ! echo \${MODIFIED_FILES} | grep -qvE '(\.gitignore\$)|(\.md\$)|(^docs)/'; then
+        echo "Only docs were updated, stopping build process."
+        exit
+      fi
 script:
   - travis_wait 120 nix-build --arg compiler \"\$GHC\" -A "haskellPackages.\$PKG"
 matrix:

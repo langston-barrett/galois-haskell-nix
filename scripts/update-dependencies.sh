@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: remove me! add functionality to Makefile
+
 set -e
 
 # This doesn't exactly match to_build, because multiple projects are in the same

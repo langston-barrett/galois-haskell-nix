@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/GaloisInc/macaw",
-  "rev": "64d71737af104f614ccd51d81a164b8036b4b3e7",
-  "date": "2018-08-15T00:17:03-07:00",
-  "sha256": "16rr4kx80n7p5m5xxcfdmz8qpw0pz3z65yvwj1jw5w114blmyq5y",
+  "rev": "e2f25b8ce1289f64b45f07f240e136191bffc544",
+  "date": "2018-09-04T13:40:18-07:00",
+  "sha256": "11zj0jdb4z67argmri625ak4m1nw3lw6q5h4ngsmdsnn7v9zbn3p",
   "fetchSubmodules": true
 }

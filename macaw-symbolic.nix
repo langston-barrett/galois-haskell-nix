@@ -2,18 +2,12 @@
 , crucible-llvm, fetchgit, lens, macaw-base, mtl
 , parameterized-utils, stdenv, text, what4
 ##################################################### Added
-# Generated with cabal2nix and set
-# enableLibraryProfiling = false;
-# enableExecutableProfiling = false;
-# manually
+# nix-shell -p cabal2nix --run "cabal2nix --subpath symbolic https://github.com/GaloisInc/macaw > macaw-symbolic.nix"
 , fetchFromGitHub
 }:
 
 let
   fromJson = builtins.fromJSON (builtins.readFile ./macaw.json);
-
-  # For some reason, nix-prefetch-git --deepClone doesn't compute the
-  # correct SHA256, so we just handle this one manually.
   src = fetchFromGitHub {
     inherit (fromJson) rev sha256;
     owner = "GaloisInc";

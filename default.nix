@@ -2,13 +2,15 @@
 , compiler ? "ghc843"
 }:
 
+# Here's how to manually update a dependency
 let
+  abc = with pkgs_old; callPackage ./abc.nix { };
   galoisOverrides = haskellPackagesNew: haskellPackagesOld:
     let
-      hmk = haskellPackagesNew.callPackage;
+      lib   = pkgs_old.haskell.lib;
       mkpkg = import ./mkpkg.nix;
       withSubdirs = pname: json: f: suffix:
-        hmk (mkpkg {
+        haskellPackagesNew.callPackage (mkpkg {
           inherit json;
           name   = pname + suffix;
           repo   = pname;
@@ -25,107 +27,103 @@ let
     abcBridge = haskellPackagesNew.callPackage ./abcBridge.nix { };
 
     # Broken: depends on everything else
-    saw = (hmk (mkpkg {
-      repo = "saw-script";
-      name = "saw";
-      json = ./saw-script.json;
-      }) { });
+    saw = haskellPackagesOld.callPackage ./saw-script.nix { };
+    # saw = haskellPackagesOld.callPackage ./saw-script.nix { git = pkgs_old.git; };
 
     # The version on Hackage should work, its just not in nixpkgs yet
-    parameterized-utils = hmk (mkpkg {
+    parameterized-utils = haskellPackagesNew.callPackage (mkpkg {
       name = "parameterized-utils";
       json = ./parameterized-utils.json;
       }) { };
 
-    saw-core = hmk (mkpkg {
+    saw-core = haskellPackagesNew.callPackage (mkpkg {
       name = "saw-core";
       json = ./saw-core.json;
       }) { };
 
-    saw-core-aig = hmk (mkpkg {
+    saw-core-aig = haskellPackagesNew.callPackage (mkpkg {
       name = "saw-core-aig";
       json = ./saw-core-aig.json;
       }) { };
 
     # This one takes a long time to build
-    saw-core-sbv = hmk (mkpkg {
+    saw-core-sbv = haskellPackagesNew.callPackage (mkpkg {
       name = "saw-core-sbv";
       json = ./saw-core-sbv.json;
       }) { };
 
-    saw-core-what4 = hmk (mkpkg {
+    saw-core-what4 = haskellPackagesNew.callPackage (mkpkg {
       name = "saw-core-what4";
       json = ./saw-core-what4.json;
-      }) { };
+    }) { };
 
     crucible      = crucibleF "";
-    crucible-jvm  = crucibleF "jvm"; # Broken
+    crucible-jvm  = crucibleF "jvm";
     # fixed! GHC 8.4.3 bug
     # This package can't be built with profiling on with GHC 8.4.3.
     # This change has to be propagated to all the packages that depend on it.
     crucible-llvm = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
     crucible-saw  = crucibleF "saw";
 
-    what4 = hmk (mkpkg {
+    what4 = haskellPackagesNew.callPackage (mkpkg {
       name   = "what4";
       repo   = "crucible";
       json   = ./crucible.json;
       subdir = "what4";
     }) { };
 
-    # Cryptol needs base-compat < 0.10, version is 0.10.4
-    cryptol = pkgs_old.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
+    what4-abc = haskellPackagesNew.callPackage ./what4-abc.nix { inherit abc; };
 
-    cryptol-verifier = hmk (mkpkg {
+    # Cryptol needs base-compat < 0.10, version is 0.10.4
+    cryptol = lib.doJailbreak haskellPackagesOld.cryptol;
+
+    # Broken
+    cryptol-verifier = haskellPackagesNew.callPackage (mkpkg {
       name = "cryptol-verifier";
       json = ./cryptol-verifier.json;
     }) { };
 
-    elf-edit = hmk (mkpkg {
+    elf-edit = haskellPackagesNew.callPackage (mkpkg {
       name = "elf-edit";
       json = ./elf-edit.json;
     }) { };
 
-    flexdis86 = hmk (mkpkg {
+    flexdis86 = haskellPackagesNew.callPackage (mkpkg {
       name = "flexdis86";
       json = ./flexdis86.json;
     }) { };
 
-    binary-symbols = hmk (mkpkg {
+    binary-symbols = haskellPackagesNew.callPackage (mkpkg {
       name   = "binary-symbols";
       repo   = "flexdis86";
       subdir = "binary-symbols";
       json   = ./flexdis86.json;
     }) { };
 
-    galois-dwarf = hmk (mkpkg {
+    galois-dwarf = haskellPackagesNew.callPackage (mkpkg {
       name = "dwarf";
       json = ./dwarf.json;
     }) { };
 
     # Hackage version broken
-    jvm-parser = hmk (mkpkg {
+    jvm-parser = haskellPackagesNew.callPackage (mkpkg {
       name = "jvm-parser";
       json = ./jvm-parser.json;
     }) { };
 
-    # Broken
-    jvm-verifier = hmk (mkpkg {
-      name = "jvm-verifier";
-      json = ./jvm-verifier.json;
-    }) { };
+    jvm-verifier = haskellPackagesNew.callPackage ./jvm-verifier.nix { };
 
-    llvm-pretty-bc-parser = hmk (mkpkg {
+    llvm-pretty-bc-parser = haskellPackagesNew.callPackage (mkpkg {
       name = "llvm-pretty-bc-parser";
       json = ./llvm-pretty-bc-parser.json;
     }) { };
 
-    llvm-verifier = hmk (mkpkg {
+    llvm-verifier = haskellPackagesNew.callPackage (mkpkg {
       name = "llvm-verifier";
       json = ./llvm-verifier.json;
     }) { };
 
-    llvm-pretty = hmk (mkpkg {
+    llvm-pretty = haskellPackagesNew.callPackage (mkpkg {
       name = "llvm-pretty";
       owner = "elliottt";
       json = ./llvm-pretty.json;
@@ -137,21 +135,6 @@ let
     macaw-x86          = macaw "x86";
     # macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: crucible-llvm
     macaw-x86-symbolic = haskellPackagesNew.callPackage ./macaw-x86-symbolic.nix { };
-
-    # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
-    # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
-    # hpack = haskellPackagesNew.hpack_0_29_6;
-    # cabal2nix = pkgs_old.haskell.lib.dontCheck haskellPackagesOld.cabal2nix;
-  };
-
-
-  config = {
-    allowUnfree = true; # https://github.com/GaloisInc/flexdis86/pull/1
-    packageOverrides = pkgs: rec {
-      haskellPackages = pkgs.haskell.packages."${compiler}".override {
-        overrides = galoisOverrides;
-      };
-    };
   };
 
   nixpkgs = builtins.fromJSON (builtins.readFile ./nixpkgs.json);
@@ -160,4 +143,13 @@ in import (pkgs_old.fetchFromGitHub {
   owner = "NixOS";
   repo  = "nixpkgs";
   inherit (nixpkgs) rev sha256;
-}) { inherit config; }
+}) {
+  config = {
+    allowUnfree = true; # https://github.com/GaloisInc/flexdis86/pull/1
+    packageOverrides = pkgs: rec {
+      haskellPackages = pkgs.haskell.packages."${compiler}".override {
+        overrides = galoisOverrides;
+      };
+    };
+  };
+}

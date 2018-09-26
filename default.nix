@@ -57,13 +57,19 @@ let
       json = ./saw-core-what4.json;
     }) { };
 
-    crucible      = crucibleF "";
-    crucible-jvm  = crucibleF "jvm";
-    # fixed! GHC 8.4.3 bug
+    hpb = haskellPackagesNew.callPackage (mkpkg { # Haskell Protocol Buffers
+      name = "hpb";
+      json = ./hpb.json;
+    }) { };
+
+    crucible        = crucibleF "";
+    crucible-c      = crucibleF "c";
+    crucible-jvm    = crucibleF "jvm";
+    crucible-server = crucibleF "server";
+    crucible-saw    = crucibleF "saw";
     # This package can't be built with profiling on with GHC 8.4.3.
     # This change has to be propagated to all the packages that depend on it.
-    crucible-llvm = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
-    crucible-saw  = crucibleF "saw";
+    crucible-llvm   = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
 
     what4 = haskellPackagesNew.callPackage (mkpkg {
       name   = "what4";
@@ -75,7 +81,12 @@ let
     what4-abc = haskellPackagesNew.callPackage ./what4-abc.nix { inherit abc; };
 
     # Cryptol needs base-compat < 0.10, version is 0.10.4
-    cryptol = lib.doJailbreak haskellPackagesOld.cryptol;
+    # cryptol = lib.doJailbreak haskellPackagesOld.cryptol;
+    # crucible-server needs cryptol > hackage
+    cryptol = haskellPackagesNew.callPackage (mkpkg {
+      name = "cryptol";
+      json = ./cryptol.json;
+    }) { };
 
     # Broken
     cryptol-verifier = haskellPackagesNew.callPackage (mkpkg {

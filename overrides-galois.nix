@@ -30,7 +30,7 @@ in {
     json = ./json/parameterized-utils.json;
     }) { };
 
-  saw-script = hmk ./saw-script.nix { };
+  saw-script = pkgsOld.haskell.lib.dontCheck (hmk ./saw-script.nix { });
 
   saw-core = hmk (mkpkg {
     name = "saw-core";
@@ -116,11 +116,7 @@ in {
     json = ./json/jvm-parser.json;
   }) { };
 
-  # Broken
-  jvm-verifier = hmk (mkpkg {
-    name = "jvm-verifier";
-    json = ./json/jvm-verifier.json;
-  }) { };
+  jvm-verifier = haskellPackagesNew.callPackage ./jvm-verifier.nix { };
 
   llvm-pretty-bc-parser = hmk (mkpkg {
     name = "llvm-pretty-bc-parser";

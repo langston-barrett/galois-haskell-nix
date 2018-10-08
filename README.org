@@ -1,0 +1,38 @@
+* galois-haskell-nix
+
+  To use these builds, import this package set in your Nix file and access its
+  =haskellPackages= attribute:
+
+  #+begin_src nix
+    let
+      galoisHaskell = import ../path/to/galois-haskell-nix/default.nix { };
+    in stdenv.mkDerivation {
+      buildInputs = [
+        galoisHaskell.haskellPackages.crucible-jvm
+      ];
+    }
+  #+end_src
+
+** Hacking
+
+   This project pins specific versions of all of the projects involved (this
+   information is in the JSON files). These will quickly fall out of date, run
+   =update-dependencies.sh= to upgrade them all.
+
+   =make build= builds each package just as will be done in Travis. Due to the
+   miracle of Nix, the builds will succeed in CI iff they succeed locally.
+
+*** Overrides
+
+    For ease of use and development, this package set is maintained as a set of
+    overrides to the Haskell package set. In particular, =overrides-galois.nix=
+    defines the base set of Haskell packages.
+
+    Additional packages can be layered on top of this set (or changes can be
+    made to the packages here) by using =lib.composeExtensions=, see =local.nix=
+    for an example.
+
+** TODO
+
+   - Test with multiple versions of GHC
+   - Test with multiple versions of nixpkgs

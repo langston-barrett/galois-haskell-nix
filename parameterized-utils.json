@@ -1,7 +1,7 @@
 {
-  "url": "ssh://git@github.com/GaloisInc/parameterized-utils",
-  "rev": "a30e12292371bc9abe6ccc631a0409df059449d9",
-  "date": "2018-07-23T13:16:05-07:00",
-  "sha256": "1vgimdy08marlc6d7zqxag110przp1n8c9pac41n4qabhlk2bpb4",
+  "url": "https://github.com/GaloisInc/parameterized-utils",
+  "rev": "bd54adabe6fefaa1e05a1a28f090e36f9dc4a76c",
+  "date": "2018-09-27T14:25:04-07:00",
+  "sha256": "1b1ivdim22d2j6272xqkda79aj45j3gfsjnwrbjq5f42qldkkavm",
   "fetchSubmodules": true
 }

@@ -20,7 +20,7 @@
 }:
 
 let
-  fromJson = builtins.fromJSON (builtins.readFile ./saw-script.json);
+  fromJson = builtins.fromJSON (builtins.readFile ./json/saw-script.json);
   src = fetchFromGitHub {
     inherit (fromJson) rev sha256;
     owner = "GaloisInc";

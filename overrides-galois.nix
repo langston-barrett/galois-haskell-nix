@@ -1,10 +1,11 @@
 # Overrides to the default Haskell package set for most Galois packages
-{ pkgs_old ? import ./pinned-pkgs.nix { } }:
+{ pkgsOld ? import ./pinned-pkgs.nix { } }:
 
 haskellPackagesNew: haskellPackagesOld:
 let
+  abc = pkgsOld.callPackage ./abc.nix { };
   hmk   = haskellPackagesNew.callPackage;
-  hlib  = pkgs_old.haskell.lib;
+  hlib  = pkgsOld.haskell.lib;
   mkpkg = import ./mkpkg.nix;
   withSubdirs = pname: json: f: suffix:
     hmk (mkpkg {
@@ -57,22 +58,20 @@ in {
   crucible-jvm    = crucibleF "jvm";
   # crucible-server = crucibleF "server";
   crucible-saw    = crucibleF "saw";
-  # crucible-llvm   = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
-  crucible-llvm   =
-    (haskellPackagesOld.callPackage ./crucible-llvm.nix { }).overrideDerivation
-      (oldAttrs: {
-        src = pkgs_old.lib.sourceFilesBySuffices
-                ../crucible/crucible-llvm [".hs" "LICENSE" "cabal" ".c"];
-        postUnpack = null;
-        doCheck    = false;
-      });
+  crucible-llvm   = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
 
-  what4-abc = hmk (mkpkg {
+  what4-abc = (hmk (mkpkg {
     name   = "what4-abc";
     repo   = "crucible";
     json   = ./json/crucible.json;
     subdir = "what4-abc";
-  }) { };
+  }) { }).overrideDerivation (oldAttrs: {
+      buildPhase = ''
+        export NIX_LDFLAGS+=" -L${abc} -L${abc}/lib"
+        ${oldAttrs.buildPhase}
+      '';
+      librarySystemDepends = [ abc ];
+    });
 
   what4 = hmk (mkpkg {
     name   = "what4";
@@ -82,7 +81,7 @@ in {
   }) { };
 
   # Cryptol needs base-compat < 0.10, version is 0.10.4
-  cryptol = pkgs_old.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
+  cryptol = pkgsOld.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
 
   cryptol-verifier = hmk (mkpkg {
     name = "cryptol-verifier";
@@ -149,5 +148,5 @@ in {
   # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
   # hpack = haskellPackagesNew.hpack_0_29_6;
-  # cabal2nix = pkgs_old.haskell.lib.dontCheck haskellPackagesOld.cabal2nix;
+  # cabal2nix = pkgsOld.haskell.lib.dontCheck haskellPackagesOld.cabal2nix;
 }

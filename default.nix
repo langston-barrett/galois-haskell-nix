@@ -14,7 +14,7 @@ let
     };
   };
 
-  nixpkgs = builtins.fromJSON (builtins.readFile ./nixpkgs.json);
+  nixpkgs = builtins.fromJSON (builtins.readFile ./json/nixpkgs.json);
 
 in import (pkgsOld.fetchFromGitHub {
   owner = "NixOS";

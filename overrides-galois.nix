@@ -14,10 +14,10 @@ let
       subdir = f suffix;
     }) { };
   crucibleF =
-    withSubdirs "crucible" ./crucible.json
+    withSubdirs "crucible" ./json/crucible.json
       (suffix: "crucible" + (if suffix == "" then "" else "-" + suffix));
   macaw =
-    withSubdirs "macaw" ./macaw.json (suffix: suffix);
+    withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
 in {
 
   # Need newer version, to override cabal2nix's inputs
@@ -26,30 +26,30 @@ in {
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = hmk (mkpkg {
     name = "parameterized-utils";
-    json = ./parameterized-utils.json;
+    json = ./json/parameterized-utils.json;
     }) { };
 
   saw-script = hmk ./saw-script.nix { };
 
   saw-core = hmk (mkpkg {
     name = "saw-core";
-    json = ./saw-core.json;
+    json = ./json/saw-core.json;
     }) { };
 
   saw-core-aig = hmk (mkpkg {
     name = "saw-core-aig";
-    json = ./saw-core-aig.json;
+    json = ./json/saw-core-aig.json;
     }) { };
 
   # This one takes a long time to build
   saw-core-sbv = hmk (mkpkg {
     name = "saw-core-sbv";
-    json = ./saw-core-sbv.json;
+    json = ./json/saw-core-sbv.json;
     }) { };
 
   saw-core-what4 = hmk (mkpkg {
     name = "saw-core-what4";
-    json = ./saw-core-what4.json;
+    json = ./json/saw-core-what4.json;
     }) { };
 
   crucible        = crucibleF "";
@@ -67,10 +67,17 @@ in {
         doCheck    = false;
       });
 
+  what4-abc = hmk (mkpkg {
+    name   = "what4-abc";
+    repo   = "crucible";
+    json   = ./json/crucible.json;
+    subdir = "what4-abc";
+  }) { };
+
   what4 = hmk (mkpkg {
     name   = "what4";
     repo   = "crucible";
-    json   = ./crucible.json;
+    json   = ./json/crucible.json;
     subdir = "what4";
   }) { };
 
@@ -79,57 +86,57 @@ in {
 
   cryptol-verifier = hmk (mkpkg {
     name = "cryptol-verifier";
-    json = ./cryptol-verifier.json;
+    json = ./json/cryptol-verifier.json;
   }) { };
 
   elf-edit = hmk (mkpkg {
     name = "elf-edit";
-    json = ./elf-edit.json;
+    json = ./json/elf-edit.json;
   }) { };
 
   flexdis86 = hmk (mkpkg {
     name = "flexdis86";
-    json = ./flexdis86.json;
+    json = ./json/flexdis86.json;
   }) { };
 
   binary-symbols = hmk (mkpkg {
     name   = "binary-symbols";
     repo   = "flexdis86";
     subdir = "binary-symbols";
-    json   = ./flexdis86.json;
+    json   = ./json/flexdis86.json;
   }) { };
 
   galois-dwarf = hmk (mkpkg {
     name = "dwarf";
-    json = ./dwarf.json;
+    json = ./json/dwarf.json;
   }) { };
 
   # Hackage version broken
   jvm-parser = hmk (mkpkg {
     name = "jvm-parser";
-    json = ./jvm-parser.json;
+    json = ./json/jvm-parser.json;
   }) { };
 
   # Broken
   jvm-verifier = hmk (mkpkg {
     name = "jvm-verifier";
-    json = ./jvm-verifier.json;
+    json = ./json/jvm-verifier.json;
   }) { };
 
   llvm-pretty-bc-parser = hmk (mkpkg {
     name = "llvm-pretty-bc-parser";
-    json = ./llvm-pretty-bc-parser.json;
+    json = ./json/llvm-pretty-bc-parser.json;
   }) { };
 
   llvm-verifier = hmk (mkpkg {
     name = "llvm-verifier";
-    json = ./llvm-verifier.json;
+    json = ./json/llvm-verifier.json;
   }) { };
 
   llvm-pretty = hmk (mkpkg {
     name = "llvm-pretty";
     owner = "elliottt";
-    json = ./llvm-pretty.json;
+    json = ./json/llvm-pretty.json;
   }) { };
 
   macaw-base         = macaw "base";

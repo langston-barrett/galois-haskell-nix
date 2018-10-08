@@ -30,5 +30,5 @@ to_fetch=(
 for dep in ${to_fetch[*]}; do
   echo "Fetching $dep"
   nix-shell -p nix-prefetch-git --run \
-    "nix-prefetch-git ssh://git@github.com/GaloisInc/$dep > $dep.json"
+    "nix-prefetch-git ssh://git@github.com/GaloisInc/$dep > json/$dep.json"
 done

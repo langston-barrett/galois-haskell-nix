@@ -1,7 +1,7 @@
 {
-  "url": "ssh://git@github.com/GaloisInc/flexdis86",
-  "rev": "1a162453c818d401d0cedce5764adeafb4a092c7",
-  "date": "2018-08-15T15:06:59-07:00",
-  "sha256": "0cmxn72ny6qycj2km46s79jnz8y6jw4bvv24hmlamfaz1c3mvjyz",
+  "url": "https://github.com/GaloisInc/flexdis86",
+  "rev": "d992906b4d62fad8e5153f2b6f4416b832fe1c65",
+  "date": "2018-10-02T02:24:23-07:00",
+  "sha256": "1x7f24nw0xhzjav24crpplk2f5fglniy2nfrjdc9dwyq9j56vb1d",
   "fetchSubmodules": true
 }

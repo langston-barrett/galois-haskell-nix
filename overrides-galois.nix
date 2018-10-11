@@ -6,7 +6,7 @@
 haskellPackagesNew: haskellPackagesOld:
 let
   hmk   = haskellPackagesNew.callPackage;
-  hlib  = pkgs_old.haskell.lib;
+  hlib  = pkgsOld.haskell.lib;
   mkpkg = import ./mkpkg.nix;
   withSubdirs = pname: json: f: suffix:
     hmk (mkpkg {
@@ -35,59 +35,57 @@ in {
     name = "saw-script";
     json = ./json/saw-script.json;
   }) { }).overrideDerivation (oldAttrs:
-      # When using GHC 8.4.3, we have to disable profiling
-      (if compiler == "ghc843"
-      then {
-        enableLibraryProfiling = false;
-        enableExecutableProfiling = false;
-      }
-      else {
-      })
-      // {
-        # The build parses the output of a git command to get the revision. Just provide it instead.
-        buildTools = [
-          (pkgsOld.lib.writeShellScriptBin "git" ''
-            echo ${oldAttrs.src.rev}
-          '')
-        ];
-      }
-    );
+    # When using GHC 8.4.3, we have to disable profiling, see README
+    (if compiler == "ghc843"
+    then {
+      enableLibraryProfiling = false;
+      enableExecutableProfiling = false;
+    }
+    else {
+    })
+    // {
+      # The build parses the output of a git command to get the revision. Just provide it instead.
+      buildTools = [
+        (pkgsOld.lib.writeShellScriptBin "git" ''
+          echo ${oldAttrs.src.rev}
+        '')
+      ];
+    });
 
   saw-core = hmk (mkpkg {
     name = "saw-core";
     json = ./saw-core.json;
-    }) { };
+  }) { };
 
   saw-core-aig = hmk (mkpkg {
     name = "saw-core-aig";
     json = ./saw-core-aig.json;
-    }) { };
+  }) { };
 
   # This one takes a long time to build
   saw-core-sbv = hmk (mkpkg {
     name = "saw-core-sbv";
     json = ./saw-core-sbv.json;
-    }) { };
+  }) { };
 
   saw-core-what4 = hmk (mkpkg {
     name = "saw-core-what4";
     json = ./saw-core-what4.json;
-    }) { };
+  }) { };
 
   crucible        = crucibleF "";
   crucible-c      = crucibleF "c";
   crucible-jvm    = crucibleF "jvm";
   # crucible-server = crucibleF "server";
   crucible-saw    = crucibleF "saw";
-  # crucible-llvm   = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
-  crucible-llvm   =
-    (haskellPackagesOld.callPackage ./crucible-llvm.nix { }).overrideDerivation
-      (oldAttrs: {
-        src = pkgs_old.lib.sourceFilesBySuffices
-                ../crucible/crucible-llvm [".hs" "LICENSE" "cabal" ".c"];
-        postUnpack = null;
-        doCheck    = false;
-      });
+  crucible-llvm   = (crucibleF "llvm").overrideDerivation (oldAttrs:
+    # When using GHC 8.4.3, we have to disable profiling, see README
+    (if compiler == "ghc843"
+    then {
+      enableLibraryProfiling = false;
+      enableExecutableProfiling = false;
+    }
+    else { }));
 
   what4 = hmk (mkpkg {
     name   = "what4";
@@ -97,7 +95,7 @@ in {
   }) { };
 
   # Cryptol needs base-compat < 0.10, version is 0.10.4
-  cryptol = pkgs_old.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
+  cryptol = pkgsOld.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
 
   cryptol-verifier = hmk (mkpkg {
     name = "cryptol-verifier";

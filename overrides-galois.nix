@@ -1,5 +1,5 @@
 # Overrides to the default Haskell package set for most Galois packages
-{ pkgsOld ? import ./pinned-pkgs.nix { }
+{ pkgsOld  ? import ./pinned-pkgs.nix { }
 , compiler ? "ghc843"
 }:
 
@@ -12,7 +12,13 @@ let
   dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
 
   # For packages that have different behavior for different GHC versions
-  switchGHC = arg: arg."${compiler}" or arg.otherwise;
+  switchGHC      = arg: arg."${compiler}" or arg.otherwise;
+
+  # Jailbreak a package for a specific version of GHC
+  jailbreakOnGHC = ver: pkg: switchGHC {
+    "${ver}"  = hlib.dontCheck (hlib.doJailbreak pkg);
+    otherwise = pkg;
+  };
 
   withSubdirs = pname: json: f: suffix:
     hmk (mkpkg {
@@ -171,6 +177,8 @@ in {
     otherwise = macaw "x86_symbolic";
   };
 
+  ######################### External considerations
+
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
   hpack     = switchGHC {
     "ghc822"  = hlib.dontCheck haskellPackagesNew.hpack_0_29_6;
@@ -180,4 +188,21 @@ in {
     "ghc822"  = hlib.dontCheck haskellPackagesOld.cabal2nix;
     otherwise = haskellPackagesOld.cabal2nix;
   };
+
+  # These are all as of the nixpkgs pinned in json/nixpkgs-ghc861.json.
+  #
+  # Glob:          Requires containers <0.6
+  # StateVer:      ???
+  # cabal-doctest: Requires Cabal >=1.10 && <2.3, base >=4.3 && <4.12
+  # contravariant: Requires old base
+  # doctest:       Requires old GHC
+  # unordered-c:   https://github.com/tibbe/unordered-containers/issues/214
+  # hspec-core:    Needs nixpkgs update: https://github.com/hspec/hspec/issues/379
+  Glob          = jailbreakOnGHC "ghc861" haskellPackagesOld.Glob;
+  StateVar      = jailbreakOnGHC "ghc861" haskellPackagesOld.StateVar;
+  cabal-doctest = jailbreakOnGHC "ghc861" haskellPackagesOld.cabal-doctest;
+  contravariant = jailbreakOnGHC "ghc861" haskellPackagesOld.contravariant;
+  doctest       = jailbreakOnGHC "ghc861" haskellPackagesOld.doctest;
+  hspec-core    = jailbreakOnGHC "ghc861" haskellPackagesOld.hspec-core;
+  unordered-containers = jailbreakOnGHC "ghc861" haskellPackagesOld.unordered-containers;
 }

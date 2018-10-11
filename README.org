@@ -19,10 +19,10 @@ use these builds, import this package set in your Nix file and access its
    You can specify which compiler you'd like to use in =default.nix= or
    =local.nix=.
 
-   - GHC 8.2.2: ???
+   - GHC 8.2.2: Error while building macaw. To be investigated...
    - GHC 8.4.3: Fully supported. There is [[https://ghc.haskell.org/trac/ghc/ticket/15186][a bug]] in this version of GHC
      that forces us to build without profiling enabled.
-   - GHC 8.6.1: Likely, the projects don't yet support GHC 8.6.
+   - GHC 8.6.1: Unsupported. Too many upstream dependencies aren't ready.
 
 ** Hacking
 

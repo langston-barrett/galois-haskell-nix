@@ -6,6 +6,7 @@ PKGS ?= \
   crucible-jvm \
   crucible-llvm \
   crucible-saw \
+  crux \
   cryptol \
   cryptol-verifier \
   elf-edit \

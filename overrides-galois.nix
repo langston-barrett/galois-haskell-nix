@@ -58,7 +58,15 @@ in {
   crucible-jvm    = crucibleF "jvm";
   # crucible-server = crucibleF "server";
   crucible-saw    = crucibleF "saw";
-  crucible-llvm   = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
+  crucible-llvm   =
+    (haskellPackagesOld.callPackage ./crucible-llvm.nix { }).overrideDerivation
+      (_: { doCheck = false; });
+  crux            = hmk (mkpkg {
+    name   = "crux";
+    json   = ./json/crucible.json;
+    repo   = "crucible";
+    subdir = "crux";
+  }) { };
 
   what4-abc = (hmk (mkpkg {
     name   = "what4-abc";
@@ -73,12 +81,12 @@ in {
       librarySystemDepends = [ abc ];
     });
 
-  what4 = hmk (mkpkg {
+  what4 = (hmk (mkpkg {
     name   = "what4";
     repo   = "crucible";
     json   = ./json/crucible.json;
     subdir = "what4";
-  }) { };
+  }) { }).overrideDerivation (_: { doCheck = false; });
 
   # Cryptol needs base-compat < 0.10, version is 0.10.4
   cryptol = pkgsOld.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
@@ -135,10 +143,8 @@ in {
   }) { };
 
   macaw-base         = macaw "base";
-  # macaw-symbolic     = macaw "symbolic"; # Broken: crucible-llvm
-  macaw-symbolic = haskellPackagesNew.callPackage ./macaw-symbolic.nix { };
+  macaw-symbolic     = haskellPackagesNew.callPackage ./macaw-symbolic.nix { };
   macaw-x86          = macaw "x86";
-  # macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: crucible-llvm
   macaw-x86-symbolic = haskellPackagesNew.callPackage ./macaw-x86-symbolic.nix { };
 
   # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009

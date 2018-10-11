@@ -39,21 +39,10 @@ let
     let name = "what4" + maybeSuffix suffix;
     in dontCheck (useCrucible name);
 
-  # When using GHC 8.4.3, we have to disable profiling for some packages
-  # See the README
-  disableProfiling843 = pkg:
-    pkg.overrideDerivation (oldAttrs:
-      (if compiler == "ghc843"
-      then {
-        doCheck = false;
-        enableLibraryProfiling = false;
-        enableExecutableProfiling = false;
-      }
-      else { doCheck = false; } ));
 in {
 
   # Need newer version, to override cabal2nix's inputs
-  abcBridge = haskellPackagesNew.callPackage ./abcBridge.nix { };
+  abcBridge = hmk ./abcBridge.nix { };
 
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = hmk (mkpkg {
@@ -61,7 +50,7 @@ in {
     json = ./json/parameterized-utils.json;
     }) { };
 
-  saw-script = haskellPackagesOld.callPackage ./saw-script.nix { };
+  saw-script = hmk ./saw-script.nix { };
   # saw-script = (hmk (mkpkg {
   #   name = "saw-script";
   #   json = ./json/saw-script.json;
@@ -109,7 +98,10 @@ in {
   crucible-c    = crucibleF "c";
   crucible-saw  = crucibleF "saw";
   # crucible-llvm = disableProfiling843 (crucibleF "llvm");
-  crucible-llvm = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
+  crucible-llvm =
+    if compiler == "ghc843"
+    then hmk ./crucible-llvm.nix { }
+    else (crucibleF "llvm");
   crux          = useCrucible "crux";
   crucible-jvm  = dontCheck (crucibleF "jvm");
 
@@ -169,7 +161,7 @@ in {
     json = ./json/llvm-pretty-bc-parser.json;
   }) { };
 
-  llvm-verifier = disableProfiling843 (hmk (mkpkg {
+  llvm-verifier = (hmk (mkpkg {
     name = "llvm-verifier";
     json = ./json/llvm-verifier.json;
   }) { });

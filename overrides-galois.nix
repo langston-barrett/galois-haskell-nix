@@ -20,6 +20,17 @@ let
       (suffix: "crucible" + (if suffix == "" then "" else "-" + suffix));
   macaw =
     withSubdirs "macaw" ./macaw.json (suffix: suffix);
+
+  # When using GHC 8.4.3, we have to disable profiling for some packages
+  # See the README
+  disableProfiling843 = pkg:
+    pkg.overrideDerivation (oldAttrs:
+      (if compiler == "ghc843"
+      then {
+        enableLibraryProfiling = false;
+        enableExecutableProfiling = false;
+      }
+      else { }));
 in {
 
   # Need newer version, to override cabal2nix's inputs
@@ -46,7 +57,7 @@ in {
     // {
       # The build parses the output of a git command to get the revision. Just provide it instead.
       buildTools = [
-        (pkgsOld.lib.writeShellScriptBin "git" ''
+        (pkgsOld.writeShellScriptBin "git" ''
           echo ${oldAttrs.src.rev}
         '')
       ];
@@ -78,14 +89,7 @@ in {
   crucible-jvm    = crucibleF "jvm";
   # crucible-server = crucibleF "server";
   crucible-saw    = crucibleF "saw";
-  crucible-llvm   = (crucibleF "llvm").overrideDerivation (oldAttrs:
-    # When using GHC 8.4.3, we have to disable profiling, see README
-    (if compiler == "ghc843"
-    then {
-      enableLibraryProfiling = false;
-      enableExecutableProfiling = false;
-    }
-    else { }));
+  crucible-llvm   = disableProfiling843 (crucibleF "llvm");
 
   what4 = hmk (mkpkg {
     name   = "what4";
@@ -130,7 +134,6 @@ in {
     json = ./jvm-parser.json;
   }) { };
 
-  # Broken
   jvm-verifier = hmk (mkpkg {
     name = "jvm-verifier";
     json = ./jvm-verifier.json;
@@ -153,14 +156,15 @@ in {
   }) { };
 
   macaw-base         = macaw "base";
-  # macaw-symbolic     = macaw "symbolic"; # Broken: crucible-llvm
-  macaw-symbolic = haskellPackagesNew.callPackage ./macaw-symbolic.nix { };
+  macaw-symbolic     = disableProfiling843 (macaw "symbolic");
   macaw-x86          = macaw "x86";
-  # macaw-x86-symbolic = macaw "x86_symbolic"; # Broken: crucible-llvm
-  macaw-x86-symbolic = haskellPackagesNew.callPackage ./macaw-x86-symbolic.nix { };
+  macaw-x86-symbolic = disableProfiling843 (macaw "x86-symbolic");
 
-  # https://github.com/NixOS/cabal2commit/f895510181017fd3dc478436229e92e1e8ea8009
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
-  # hpack = haskellPackagesNew.hpack_0_29_6;
-  # cabal2nix = pkgs_old.haskell.lib.dontCheck haskellPackagesOld.cabal2nix;
+  hpack     = if compiler == "ghc822"
+              then pkgsOld.haskell.lib.dontCheck haskellPackagesNew.hpack_0_29_6
+              else haskellPackagesOld.hpack;
+  cabal2nix = if compiler == "ghc822"
+              then pkgsOld.haskell.lib.dontCheck haskellPackagesOld.cabal2nix
+              else haskellPackagesOld.cabal2nix;
 }

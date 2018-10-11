@@ -11,6 +11,9 @@ let
   mkpkg     = import ./mkpkg.nix;
   dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
 
+  # For packages that have different behavior for different GHC versions
+  switchGHC = arg: arg."${compiler}" or arg.otherwise;
+
   withSubdirs = pname: json: f: suffix:
     hmk (mkpkg {
       inherit json;
@@ -48,29 +51,15 @@ in {
   parameterized-utils = hmk (mkpkg {
     name = "parameterized-utils";
     json = ./json/parameterized-utils.json;
-    }) { };
+  }) { };
 
-  saw-script = hmk ./saw-script.nix { };
-  # saw-script = (hmk (mkpkg {
-  #   name = "saw-script";
-  #   json = ./json/saw-script.json;
-  # }) { }).overrideDerivation (oldAttrs:
-  #   # When using GHC 8.4.3, we have to disable profiling, see README
-  #   (if compiler == "ghc843"
-  #   then {
-  #     enableLibraryProfiling = false;
-  #     enableExecutableProfiling = false;
-  #   }
-  #   else {
-  #   })
-  #   // {
-  #     # The build parses the output of a git command to get the revision. Just provide it instead.
-  #     buildTools = [
-  #       (pkgsOld.writeShellScriptBin "git" ''
-  #         echo "galois-haskell-nix"
-  #       '')
-  #     ];
-  #   });
+  saw-script = switchGHC {
+    "ghc843"  = hmk ./ghc843/saw-script.nix { };
+    otherwise = hmk (mkpkg {
+                  name = "saw-script";
+                  json = ./json/saw-script.json;
+                }) { };
+  };
 
   saw-core = hmk (mkpkg {
     name = "saw-core";
@@ -97,13 +86,12 @@ in {
   crucible      = crucibleF "";
   crucible-c    = crucibleF "c";
   crucible-saw  = crucibleF "saw";
-  # crucible-llvm = disableProfiling843 (crucibleF "llvm");
-  crucible-llvm =
-    if compiler == "ghc843"
-    then hmk ./crucible-llvm.nix { }
-    else (crucibleF "llvm");
   crux          = useCrucible "crux";
   crucible-jvm  = dontCheck (crucibleF "jvm");
+  crucible-llvm = switchGHC {
+    "ghc843"  = hmk ./ghc843/crucible-llvm.nix { };
+    otherwise = dontCheck (crucibleF "llvm");
+  };
 
   what4     = what4 "";
   what4-sbv = what4 "sbv";
@@ -173,17 +161,23 @@ in {
   }) { };
 
   macaw-base         = macaw "base";
-  # macaw-symbolic     = disableProfiling843 (macaw "symbolic");
-  macaw-symbolic     = haskellPackagesOld.callPackage ./macaw-symbolic.nix { };
   macaw-x86          = macaw "x86";
-  # macaw-x86-symbolic = disableProfiling843 (macaw "x86_symbolic");
-  macaw-x86-symbolic = haskellPackagesOld.callPackage ./macaw-x86-symbolic.nix { };
+  macaw-symbolic     = switchGHC {
+    "ghc843"  = hmk ./ghc843/macaw-symbolic.nix { };
+    otherwise = macaw "symbolic";
+  };
+  macaw-x86-symbolic = switchGHC {
+    "ghc843"  = hmk ./ghc843/macaw-x86-symbolic.nix { };
+    otherwise = macaw "x86_symbolic";
+  };
 
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
-  hpack     = if compiler == "ghc822"
-              then hlib.dontCheck haskellPackagesNew.hpack_0_29_6
-              else haskellPackagesOld.hpack;
-  cabal2nix = if compiler == "ghc822"
-              then hlib.dontCheck haskellPackagesOld.cabal2nix
-              else haskellPackagesOld.cabal2nix;
+  hpack     = switchGHC {
+    "ghc822"  = hlib.dontCheck haskellPackagesNew.hpack_0_29_6;
+    otherwise = haskellPackagesOld.hpack;
+  };
+  cabal2nix = switchGHC {
+    "ghc822"  = hlib.dontCheck haskellPackagesOld.cabal2nix;
+    otherwise = haskellPackagesOld.cabal2nix;
+  };
 }

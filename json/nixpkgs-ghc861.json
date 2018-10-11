@@ -1,0 +1,7 @@
+{
+  "url": "https://github.com/NixOS/nixpkgs",
+  "rev": "af35bf90edcad7eb29eec3bd1bb4a9c64e527cf2",
+  "date": "2018-10-11T17:11:38+01:00",
+  "sha256": "1nsh52f2g1s8s8zdn6djdyvc1d03qd2mwnzk2w378hz4qhqpazqy",
+  "fetchSubmodules": true
+}

@@ -1,0 +1,7 @@
+{
+  "url": "https://github.com/GaloisInc/llvm-verifier",
+  "rev": "48f33de0dd989d33f4a84297197b3c10572bf969",
+  "date": "2018-08-27T17:09:31-07:00",
+  "sha256": "1shhschnx1wxddq7gfn57v3i27ci5drqb1zw0jzrnj73xagnfx8d",
+  "fetchSubmodules": true
+}

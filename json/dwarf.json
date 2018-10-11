@@ -1,0 +1,7 @@
+{
+  "url": "ssh://git@github.com/GaloisInc/dwarf",
+  "rev": "9f9e04eddca691f5d0b838ec2d850b343fbbd115",
+  "date": "2017-11-21T10:32:23-08:00",
+  "sha256": "0z8fjnxc9qjzpgsyrbbhp7dh3cai7zvni2iz46y0ra747vp476k8",
+  "fetchSubmodules": true
+}

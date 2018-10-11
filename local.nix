@@ -1,6 +1,6 @@
 # Compose the default (galois) overrides with ones for local sources
-{ pkgsOld ? import ./pinned-pkgs.nix { path = ./json/nixpkgs-ghc861.json; }
-, compiler ? "ghc861"
+{ pkgsOld ? import ./pinned-pkgs.nix { path = ./json/nixpkgs.json; }
+, compiler ? "ghc843"
 }:
 
 let

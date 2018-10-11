@@ -7,7 +7,7 @@
 }:
 
 let
-  fromJson = builtins.fromJSON (builtins.readFile ./json/macaw.json);
+  fromJson = builtins.fromJSON (builtins.readFile ../json/macaw.json);
   src = fetchFromGitHub {
     inherit (fromJson) rev sha256;
     owner = "GaloisInc";

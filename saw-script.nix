@@ -20,7 +20,7 @@
 }:
 
 let
-  fromJson = builtins.fromJSON (builtins.readFile ./saw-script.json);
+  fromJson = builtins.fromJSON (builtins.readFile ./json/saw-script.json);
   src = fetchFromGitHub {
     inherit (fromJson) rev sha256;
     owner = "GaloisInc";
@@ -29,15 +29,6 @@ let
 in mkDerivation {
 
   inherit src;
-  enableLibraryProfiling = false;
-  enableExecutableProfiling = false;
-  # The build parses the output of a git command to get the revision. Just provide it instead.
-  buildTools = [
-    # git
-    (writeShellScriptBin "git" ''
-      echo ${src.rev}
-    '')
-  ];
 
 ##################################################### Generated
 

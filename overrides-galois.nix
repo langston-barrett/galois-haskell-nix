@@ -1,5 +1,7 @@
 # Overrides to the default Haskell package set for most Galois packages
-{ pkgs_old ? import ./pinned-pkgs.nix { } }:
+{ pkgsOld ? import ./pinned-pkgs.nix { }
+, compiler ? "ghc843"
+}:
 
 haskellPackagesNew: haskellPackagesOld:
 let
@@ -29,7 +31,27 @@ in {
     json = ./parameterized-utils.json;
     }) { };
 
-  saw-script = hmk ./saw-script.nix { };
+  saw-script = (hmk (mkpkg {
+    name = "saw-script";
+    json = ./json/saw-script.json;
+  }) { }).overrideDerivation (oldAttrs:
+      # When using GHC 8.4.3, we have to disable profiling
+      (if compiler == "ghc843"
+      then {
+        enableLibraryProfiling = false;
+        enableExecutableProfiling = false;
+      }
+      else {
+      })
+      // {
+        # The build parses the output of a git command to get the revision. Just provide it instead.
+        buildTools = [
+          (pkgsOld.lib.writeShellScriptBin "git" ''
+            echo ${oldAttrs.src.rev}
+          '')
+        ];
+      }
+    );
 
   saw-core = hmk (mkpkg {
     name = "saw-core";

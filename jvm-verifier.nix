@@ -10,7 +10,7 @@
 }:
 
 let
-  fromJson = builtins.fromJSON (builtins.readFile ./jvm-verifier.json);
+  fromJson = builtins.fromJSON (builtins.readFile ./json/jvm-verifier.json);
   src = fetchFromGitHub {
     inherit (fromJson) rev sha256;
     owner = "GaloisInc";

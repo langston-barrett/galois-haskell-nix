@@ -1,7 +1,7 @@
 { callPackage, fetchFromGitHub }:
 
 let
-  fromJson = builtins.fromJSON (builtins.readFile ./abc.json);
+  fromJson = builtins.fromJSON (builtins.readFile ./json/abc.json);
 
   src = fetchFromGitHub {
     inherit (fromJson) rev sha256;

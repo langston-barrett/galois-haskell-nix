@@ -1,11 +1,13 @@
 # Overrides for using local versions of sources.
 # Good for hacking on multiple parts of the package set.
-{ pkgs_old ? import ./pinned-pkgs.nix { } }:
+{ pkgsOld ? import ./pinned-pkgs.nix { }
+, compiler ? "ghc843"
+}:
 
 haskellPackagesNew: haskellPackagesOld:
 let
   srcFilter =
-    path: pkgs_old.lib.sourceFilesBySuffices
+    path: pkgsOld.lib.sourceFilesBySuffices
             path [".hs" "LICENSE" "cabal" ".c"];
   alterSrc = pkg: path: pkg.overrideDerivation (_: {
     src = srcFilter path;

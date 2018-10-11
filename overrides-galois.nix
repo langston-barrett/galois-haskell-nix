@@ -5,9 +5,12 @@
 
 haskellPackagesNew: haskellPackagesOld:
 let
-  hmk   = haskellPackagesNew.callPackage;
-  hlib  = pkgsOld.haskell.lib;
-  mkpkg = import ./mkpkg.nix;
+  abc       = pkgsOld.callPackage ./abc.nix { };
+  hmk       = haskellPackagesNew.callPackage;
+  hlib      = pkgsOld.haskell.lib;
+  mkpkg     = import ./mkpkg.nix;
+  dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
+
   withSubdirs = pname: json: f: suffix:
     hmk (mkpkg {
       inherit json;
@@ -15,11 +18,26 @@ let
       repo   = pname;
       subdir = f suffix;
     }) { };
-  crucibleF =
-    withSubdirs "crucible" ./json/crucible.json
-      (suffix: "crucible" + (if suffix == "" then "" else "-" + suffix));
-  macaw =
-    withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
+
+  maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
+
+  crucibleF = withSubdirs "crucible" ./json/crucible.json
+                (suffix: "crucible" + maybeSuffix suffix);
+
+  macaw = withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
+
+  # A package in a subdirectory of Crucible
+  useCrucible = name: hmk (mkpkg {
+      inherit name;
+      json   = ./json/crucible.json;
+      repo   = "crucible";
+      subdir = name;
+  }) { };
+
+  # We disable tests because they rely on external SMT solvers
+  what4 = suffix:
+    let name = "what4" + maybeSuffix suffix;
+    in dontCheck (useCrucible name);
 
   # When using GHC 8.4.3, we have to disable profiling for some packages
   # See the README
@@ -27,10 +45,11 @@ let
     pkg.overrideDerivation (oldAttrs:
       (if compiler == "ghc843"
       then {
+        doCheck = false;
         enableLibraryProfiling = false;
         enableExecutableProfiling = false;
       }
-      else { }));
+      else { doCheck = false; } ));
 in {
 
   # Need newer version, to override cabal2nix's inputs
@@ -42,26 +61,27 @@ in {
     json = ./json/parameterized-utils.json;
     }) { };
 
-  saw-script = (hmk (mkpkg {
-    name = "saw-script";
-    json = ./json/saw-script.json;
-  }) { }).overrideDerivation (oldAttrs:
-    # When using GHC 8.4.3, we have to disable profiling, see README
-    (if compiler == "ghc843"
-    then {
-      enableLibraryProfiling = false;
-      enableExecutableProfiling = false;
-    }
-    else {
-    })
-    // {
-      # The build parses the output of a git command to get the revision. Just provide it instead.
-      buildTools = [
-        (pkgsOld.writeShellScriptBin "git" ''
-          echo "galois-haskell-nix"
-        '')
-      ];
-    });
+  saw-script = haskellPackagesOld.callPackage ./saw-script.nix { };
+  # saw-script = (hmk (mkpkg {
+  #   name = "saw-script";
+  #   json = ./json/saw-script.json;
+  # }) { }).overrideDerivation (oldAttrs:
+  #   # When using GHC 8.4.3, we have to disable profiling, see README
+  #   (if compiler == "ghc843"
+  #   then {
+  #     enableLibraryProfiling = false;
+  #     enableExecutableProfiling = false;
+  #   }
+  #   else {
+  #   })
+  #   // {
+  #     # The build parses the output of a git command to get the revision. Just provide it instead.
+  #     buildTools = [
+  #       (pkgsOld.writeShellScriptBin "git" ''
+  #         echo "galois-haskell-nix"
+  #       '')
+  #     ];
+  #   });
 
   saw-core = hmk (mkpkg {
     name = "saw-core";
@@ -84,22 +104,27 @@ in {
     json = ./json/saw-core-what4.json;
   }) { };
 
-  crucible        = crucibleF "";
-  crucible-c      = crucibleF "c";
-  crucible-jvm    = crucibleF "jvm";
   # crucible-server = crucibleF "server";
-  crucible-saw    = crucibleF "saw";
-  crucible-llvm   = disableProfiling843 (crucibleF "llvm");
+  crucible      = crucibleF "";
+  crucible-c    = crucibleF "c";
+  crucible-saw  = crucibleF "saw";
+  # crucible-llvm = disableProfiling843 (crucibleF "llvm");
+  crucible-llvm = haskellPackagesOld.callPackage ./crucible-llvm.nix { };
+  crux          = useCrucible "crux";
+  crucible-jvm  = dontCheck (crucibleF "jvm");
 
-  what4 = hmk (mkpkg {
-    name   = "what4";
-    repo   = "crucible";
-    json   = ./json/crucible.json;
-    subdir = "what4";
-  }) { };
+  what4     = what4 "";
+  what4-sbv = what4 "sbv";
+  what4-abc = (what4 "abc").overrideDerivation (oldAttrs: {
+      buildPhase = ''
+        export NIX_LDFLAGS+=" -L${abc} -L${abc}/lib"
+        ${oldAttrs.buildPhase}
+      '';
+      librarySystemDepends = [ abc ];
+  });
 
   # Cryptol needs base-compat < 0.10, version is 0.10.4
-  cryptol = pkgsOld.haskell.lib.doJailbreak haskellPackagesOld.cryptol;
+  cryptol = hlib.doJailbreak haskellPackagesOld.cryptol;
 
   cryptol-verifier = hmk (mkpkg {
     name = "cryptol-verifier";
@@ -134,20 +159,20 @@ in {
     json = ./json/jvm-parser.json;
   }) { };
 
-  jvm-verifier = hmk (mkpkg {
+  jvm-verifier = dontCheck (hmk (mkpkg {
     name = "jvm-verifier";
     json = ./json/jvm-verifier.json;
-  }) { };
+  }) { });
 
   llvm-pretty-bc-parser = hmk (mkpkg {
     name = "llvm-pretty-bc-parser";
     json = ./json/llvm-pretty-bc-parser.json;
   }) { };
 
-  llvm-verifier = hmk (mkpkg {
+  llvm-verifier = disableProfiling843 (hmk (mkpkg {
     name = "llvm-verifier";
     json = ./json/llvm-verifier.json;
-  }) { };
+  }) { });
 
   llvm-pretty = hmk (mkpkg {
     name = "llvm-pretty";
@@ -156,15 +181,17 @@ in {
   }) { };
 
   macaw-base         = macaw "base";
-  macaw-symbolic     = disableProfiling843 (macaw "symbolic");
+  # macaw-symbolic     = disableProfiling843 (macaw "symbolic");
+  macaw-symbolic     = haskellPackagesOld.callPackage ./macaw-symbolic.nix { };
   macaw-x86          = macaw "x86";
-  macaw-x86-symbolic = disableProfiling843 (macaw "x86-symbolic");
+  # macaw-x86-symbolic = disableProfiling843 (macaw "x86_symbolic");
+  macaw-x86-symbolic = haskellPackagesOld.callPackage ./macaw-x86-symbolic.nix { };
 
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
   hpack     = if compiler == "ghc822"
-              then pkgsOld.haskell.lib.dontCheck haskellPackagesNew.hpack_0_29_6
+              then hlib.dontCheck haskellPackagesNew.hpack_0_29_6
               else haskellPackagesOld.hpack;
   cabal2nix = if compiler == "ghc822"
-              then pkgsOld.haskell.lib.dontCheck haskellPackagesOld.cabal2nix
+              then hlib.dontCheck haskellPackagesOld.cabal2nix
               else haskellPackagesOld.cabal2nix;
 }

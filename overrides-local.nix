@@ -16,7 +16,7 @@ let
 in {
   saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
 
-  #llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
+  llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
 
   # The tests for this one just take forever
   #llvm-verifier = dontCheck haskellPackagesOld.llvm-verifier;

@@ -1,5 +1,5 @@
 { pkgs ? import <nixpkgs> { }
-, path ? ./json/nixpkgs.json
+, path ? ./json/nixpkgs-ghc861.json
 }:
 
 # Why this revision of nixpkgs? One reason is that it is modern enough to have

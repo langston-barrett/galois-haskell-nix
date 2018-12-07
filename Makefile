@@ -61,7 +61,12 @@ build:
 	./scripts/build-all.sh $(PKGS)
 
 %.json:
-	nix-prefetch-git "ssh://git@github.com/GaloisInc/$(basename $@)" > "$@"
+	@if [[ $@ == "llvm-pretty.json" ]]; then \
+		nix-prefetch-git "ssh://git@github.com/elliottt/$(basename $@)" > "$@"; \
+	else \
+		nix-prefetch-git "ssh://git@github.com/GaloisInc/$(basename $@)" > "$@"; \
+	fi
+	mv "$@" json/
 
 .PHONY: clean
 clean:

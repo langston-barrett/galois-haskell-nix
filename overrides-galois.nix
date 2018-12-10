@@ -7,6 +7,7 @@ haskellPackagesNew: haskellPackagesOld:
 let
   abc       = pkgsOld.callPackage ./abc.nix { };
   hmk       = haskellPackagesNew.callPackage;
+  # hmk       = x: y: haskellPackagesNew.callPackage (mkpkg x) y;
   hlib      = pkgsOld.haskell.lib;
   mkpkg     = import ./mkpkg.nix;
   dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
@@ -30,7 +31,7 @@ let
 
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
-  crucibleF = withSubdirs "crucible" ./json/crucible.json
+  crucibleF = withSubdirs "crucible" ./json/saw/crucible.json
                 (suffix: "crucible" + maybeSuffix suffix);
 
   macaw = withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
@@ -89,15 +90,16 @@ in {
   }) { };
 
   # crucible-server = crucibleF "server";
-  crucible      = crucibleF "";
-  crucible-c    = crucibleF "c";
-  crucible-saw  = crucibleF "saw";
-  crux          = useCrucible "crux";
-  crucible-jvm  = dontCheck (crucibleF "jvm");
-  crucible-llvm = switchGHC {
+  crucible        = crucibleF "";
+  crucible-c      = crucibleF "c";
+  crucible-jvm    = dontCheck (crucibleF "jvm");
+  crucible-saw    = crucibleF "saw";
+  # crucible-syntax = crucibleF "syntax";
+  crux            = useCrucible "crux";
+  crucible-llvm   = hlib.doJailbreak (switchGHC {
     "ghc843"  = hmk ./ghc843/crucible-llvm.nix { };
     otherwise = dontCheck (crucibleF "llvm");
-  };
+  });
 
   what4     = what4 "";
   what4-sbv = what4 "sbv";
@@ -150,12 +152,13 @@ in {
     json = ./json/jvm-verifier.json;
   }) { });
 
-  llvm-pretty-bc-parser = hmk (mkpkg {
+  # Tests fail because they lack llvm-as
+  llvm-pretty-bc-parser = dontCheck (hmk (mkpkg {
     name = "llvm-pretty-bc-parser";
     json = ./json/llvm-pretty-bc-parser.json;
-  }) { };
+  }) { });
 
-  llvm-verifier = (hmk (mkpkg {
+  llvm-verifier = dontCheck (hmk (mkpkg {
     name = "llvm-verifier";
     json = ./json/llvm-verifier.json;
   }) { });

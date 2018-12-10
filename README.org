@@ -47,7 +47,7 @@ use these builds, import this package set in your Nix file and access its
 
     Additional packages can be layered on top of this set (or changes can be
     made to the packages here) by using =lib.composeExtensions=, see =local.nix=
-    for an example.
+    and use ~make local~ for an example.
 
 *** =make= targets
 
@@ -70,3 +70,4 @@ use these builds, import this package set in your Nix file and access its
   - See what manually-edited Nix files can be removed
   - Update all packages
   - Don't haddock anything
+  - Figure out linking with gold

@@ -1,7 +1,7 @@
 {
-  "url": "ssh://git@github.com/GaloisInc/saw-core-aig",
-  "rev": "56480328ad08bfded0a1af134fa0c413767baeb0",
-  "date": "2018-08-07T14:34:07-07:00",
-  "sha256": "14c7vj0z9hak6qjzzxc5a7ilnffdxp4h06rkjp8fxkxa6h55ybv8",
-  "fetchSubmodules": true
+  "url": "https://github.com/GaloisInc/saw-core-aig",
+  "rev": "28443a9e87cb479fa75dded41bb388bf5a606c04",
+  "date": "2018-12-05T06:53:49-08:00",
+  "sha256": "133mk4pdlhi8qq9ccpmqj84kk7d15g4m6kd512m6vh5zvky3axsq",
+  "fetchSubmodules": false
 }

@@ -4,6 +4,7 @@
 , repo ? name
 , subdir ? ""
 , sourceFilesBySuffices ? x: y: x
+, ...
 }:
 
 { haskellPackages, fetchFromGitHub, callCabal2nix }:

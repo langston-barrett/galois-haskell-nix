@@ -4,10 +4,12 @@ sudo: false
 env:
   - GHC=ghc843 PKG=abcBridge
   - GHC=ghc843 PKG=binary-symbols
+  - GHC=ghc843 PKG=cryptol
   - GHC=ghc843 PKG=crucible
   - GHC=ghc843 PKG=crucible-jvm
   - GHC=ghc843 PKG=crucible-llvm
   - GHC=ghc843 PKG=crucible-saw
+  - GHC=ghc843 PKG=crux
   - GHC=ghc843 PKG=cryptol
   - GHC=ghc843 PKG=cryptol-verifier
   - GHC=ghc843 PKG=elf-edit
@@ -22,7 +24,7 @@ env:
   - GHC=ghc843 PKG=macaw-x86
   - GHC=ghc843 PKG=macaw-x86-symbolic
   - GHC=ghc843 PKG=parameterized-utils
-  - GHC=ghc843 PKG=saw
+  - GHC=ghc843 PKG=saw-script
   - GHC=ghc843 PKG=saw-core
   - GHC=ghc843 PKG=saw-core-aig
   - GHC=ghc843 PKG=saw-core-sbv

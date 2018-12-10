@@ -3,7 +3,7 @@
 }:
 
 # Why this revision of nixpkgs? One reason is that it is modern enough to have
-# haskellPackages.json version 0.9.2, which add support for GHC 8.4.3.
+# ??? version 0.9.2, which add support for GHC 8.4.3.
 
 # See this link for a tutorial:
 # https://github.com/Gabriel439/haskell-nix/tree/master/project0

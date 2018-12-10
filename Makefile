@@ -60,13 +60,20 @@ travis:
 build:
 	./scripts/build-all.sh $(PKGS)
 
-%.json:
+.PHONY: local
+local:
+	LOCAL=1 ./scripts/build-all.sh $(PKGS)
+
+%.master.json:
 	@if [[ $@ == "llvm-pretty.json" ]]; then \
 		nix-prefetch-git "ssh://git@github.com/elliottt/$(basename $@)" > "$@"; \
 	else \
 		nix-prefetch-git "ssh://git@github.com/GaloisInc/$(basename $@)" > "$@"; \
 	fi
 	mv "$@" json/
+
+%.saw.json:
+	@bash scripts/saw-dep.sh "$(basename $(basename $@))"
 
 .PHONY: clean
 clean:

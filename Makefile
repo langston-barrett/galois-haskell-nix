@@ -64,15 +64,15 @@ build:
 local:
 	LOCAL=1 ./scripts/build-all.sh $(PKGS)
 
-%.master.json:
-	@if [[ $@ == "llvm-pretty.json" ]]; then \
-		nix-prefetch-git "ssh://git@github.com/elliottt/$(basename $@)" > "$@"; \
+%.json.master:
+	@if [[ $(basename $(basename $@)) == "llvm-pretty" ]]; then \
+		nix-prefetch-git "ssh://git@github.com/elliottt/$(basename $(basename $@))" > "$(basename $@)"; \
 	else \
-		nix-prefetch-git "ssh://git@github.com/GaloisInc/$(basename $@)" > "$@"; \
+		nix-prefetch-git "ssh://git@github.com/GaloisInc/$(basename $(basename $@))" > "$(basename $@)"; \
 	fi
-	mv "$@" json/
+	mv "$(basename $@)" json/
 
-%.saw.json:
+%.json.saw:
 	@bash scripts/saw-dep.sh "$(basename $(basename $@))"
 
 .PHONY: clean

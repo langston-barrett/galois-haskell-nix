@@ -18,9 +18,9 @@ let
 
 in {
   # crucible       = alterSrc haskellPackagesOld.crucible (../crucible);
-  # crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible);
-  # saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
 
+  crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible);
+  saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
   llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
 
   # Trying crucible-syntax (needs newer megaparsec than in nixpkgs)

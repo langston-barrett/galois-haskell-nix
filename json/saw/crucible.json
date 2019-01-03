@@ -1,7 +1,7 @@
 {
   "url": "https://github.com/GaloisInc/crucible",
-  "rev": "35a4ab47ba107e0507dcb4325a60bf74ba0a0fa2",
-  "date": "2018-11-02T10:06:52-07:00",
-  "sha256": "07fbbnn1zr8bgxslsnrpsv8f5wgnncir0r96p0nja0x7nb2l66ij",
+  "rev": "2c91c4c624c1a5ca9dce60357e45785c928f7cab",
+  "date": "2018-12-31T16:16:12-08:00",
+  "sha256": "0fq2af4hjvq9givbnwywm5gwdm8a8361l897k3lknf3lxz66x54x",
   "fetchSubmodules": false
 }

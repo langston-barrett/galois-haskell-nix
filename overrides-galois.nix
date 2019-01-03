@@ -34,12 +34,12 @@ let
   crucibleF = withSubdirs "crucible" ./json/saw/crucible.json
                 (suffix: "crucible" + maybeSuffix suffix);
 
-  macaw = withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
+  macaw = withSubdirs "macaw" ./json/saw/macaw.json (suffix: suffix);
 
   # A package in a subdirectory of Crucible
   useCrucible = name: hmk (mkpkg {
       inherit name;
-      json   = ./json/crucible.json;
+      json   = ./json/saw/crucible.json;
       repo   = "crucible";
       subdir = name;
   }) { };

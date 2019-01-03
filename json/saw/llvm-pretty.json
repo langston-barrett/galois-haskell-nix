@@ -1,7 +1,7 @@
 {
-  "url": "ssh://git@github.com/elliottt/llvm-pretty",
+  "url": "https://github.com/GaloisInc/llvm-pretty",
   "rev": "e05cf3195b0938961cb0d8ecf4b7a4821f0d2673",
   "date": "2018-12-13T11:13:52-08:00",
   "sha256": "1ijly1h0z1026rxgik2k2fzc8i61ml5xi1j303v4awd0bmprs46w",
-  "fetchSubmodules": true
+  "fetchSubmodules": false
 }

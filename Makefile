@@ -52,6 +52,9 @@ JSON ?= \
   llvm-verifier \
   macaw
 
+haskellPackages.%:
+	@nix-build -j`nproc` -A $@
+
 .PHONY: travis
 travis:
 	./scripts/travis-yml.sh $(PKGS)

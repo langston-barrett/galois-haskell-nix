@@ -54,6 +54,11 @@ in {
   # Need newer version, to override cabal2nix's inputs
   abcBridge = hmk ./abcBridge.nix { };
 
+  aig = hmk (mkpkg {
+    name = "aig";
+    json = ./json/saw/aig.json;
+  }) { };
+
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = hmk (mkpkg {
     name = "parameterized-utils";
@@ -70,23 +75,23 @@ in {
 
   saw-core = hmk (mkpkg {
     name = "saw-core";
-    json = ./json/saw-core.json;
+    json = ./json/saw/saw-core.json;
   }) { };
 
   saw-core-aig = hmk (mkpkg {
     name = "saw-core-aig";
-    json = ./json/saw-core-aig.json;
+    json = ./json/saw/saw-core-aig.json;
   }) { };
 
   # This one takes a long time to build
   saw-core-sbv = hmk (mkpkg {
     name = "saw-core-sbv";
-    json = ./json/saw-core-sbv.json;
+    json = ./json/saw/saw-core-sbv.json;
   }) { };
 
   saw-core-what4 = hmk (mkpkg {
     name = "saw-core-what4";
-    json = ./json/saw-core-what4.json;
+    json = ./json/saw/saw-core-what4.json;
   }) { };
 
   # crucible-server = crucibleF "server";
@@ -160,7 +165,7 @@ in {
 
   llvm-verifier = dontCheck (hmk (mkpkg {
     name = "llvm-verifier";
-    json = ./json/llvm-verifier.json;
+    json = ./json/saw/llvm-verifier.json;
   }) { });
 
   llvm-pretty = hmk (mkpkg {

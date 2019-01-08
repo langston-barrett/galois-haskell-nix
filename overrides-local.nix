@@ -8,7 +8,7 @@ haskellPackagesNew: haskellPackagesOld:
 let
   srcFilter =
     path: pkgsOld.lib.sourceFilesBySuffices
-            path [".hs" "LICENSE" "cabal" ".c"];
+            path [".hs" "LICENSE" "cabal" ".c" ".sawcore"];
   alterSrc = pkg: path: pkg.overrideDerivation (_: {
     src = srcFilter path;
   });
@@ -17,6 +17,9 @@ let
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
 in {
+  # https://github.com/GaloisInc/llvm-verifier/issues/21
+  llvm-verifier = alterSrc haskellPackagesOld.llvm-verifier (../llvm-verifier);
+
   # crucible       = alterSrc haskellPackagesOld.crucible (../crucible);
 
   crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible);

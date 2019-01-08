@@ -13,12 +13,12 @@ let
   dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
 
   # For packages that have different behavior for different GHC versions
-  switchGHC      = arg: hlib.dontHaddock (arg."${compiler}" or arg.otherwise);
+  switchGHC      = arg: arg."${compiler}" or arg.otherwise;
 
   # Jailbreak a package for a specific version of GHC
   jailbreakOnGHC = ver: pkg: switchGHC {
-    "${ver}"  = hlib.dontHaddock (hlib.dontCheck (hlib.doJailbreak pkg));
-    otherwise = hlib.dontHaddock pkg;
+    "${ver}"  = hlib.dontCheck (hlib.doJailbreak pkg);
+    otherwise = pkg;
   };
 
   withSubdirs = pname: json: f: suffix:

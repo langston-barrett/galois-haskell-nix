@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/GaloisInc/saw-core-what4",
-  "rev": "e16676ab653357670045c1f7dd40684dac42e39a",
-  "date": "2018-12-07T12:50:53-08:00",
-  "sha256": "17jmnixrf682n9zix2fil3vh6vr3hg58q57khmnwirlk6p3fk87a",
+  "rev": "8a52bf9cb8ce42f5a34e9aab4880a2d92e932132",
+  "date": "2019-01-03T13:03:11-08:00",
+  "sha256": "0qasmpw8fqppcbfwg8ar8n00hsp61wnsln28cgh0f8zva0gy6b82",
   "fetchSubmodules": true
 }

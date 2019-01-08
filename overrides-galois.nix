@@ -54,6 +54,11 @@ in {
   # Need newer version, to override cabal2nix's inputs
   abcBridge = hmk ./abcBridge.nix { };
 
+  aig = hmk (mkpkg {
+    name = "aig";
+    json = ./json/aig.json;
+  }) { };
+
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = hmk (mkpkg {
     name = "parameterized-utils";

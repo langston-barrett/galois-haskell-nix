@@ -13,12 +13,12 @@ let
   dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
 
   # For packages that have different behavior for different GHC versions
-  switchGHC      = arg: arg."${compiler}" or arg.otherwise;
+  switchGHC      = arg: hlib.dontHaddock (arg."${compiler}" or arg.otherwise);
 
   # Jailbreak a package for a specific version of GHC
   jailbreakOnGHC = ver: pkg: switchGHC {
-    "${ver}"  = hlib.dontCheck (hlib.doJailbreak pkg);
-    otherwise = pkg;
+    "${ver}"  = hlib.dontHaddock (hlib.dontCheck (hlib.doJailbreak pkg));
+    otherwise = hlib.dontHaddock pkg;
   };
 
   withSubdirs = pname: json: f: suffix:
@@ -165,7 +165,7 @@ in {
 
   llvm-verifier = dontCheck (hmk (mkpkg {
     name = "llvm-verifier";
-    json = ./json/llvm-verifier.json;
+    json = ./json/saw/llvm-verifier.json;
   }) { });
 
   llvm-pretty = hmk (mkpkg {

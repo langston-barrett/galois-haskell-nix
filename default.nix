@@ -1,6 +1,9 @@
 # This file overrides the Haskell package set with the given overrides.
-{ pkgsOld   ? import ./pinned-pkgs.nix { }
-, compiler  ? "ghc843"
+
+let path = ./json/nixpkgs-master.json; in
+
+{ pkgsOld   ? import ./pinned-pkgs.nix { inherit path; }
+, compiler  ? "ghc844"
 , overrides ? import ./overrides-galois.nix { }
 }:
 
@@ -14,7 +17,8 @@ let
     };
   };
 
-  nixpkgs = builtins.fromJSON (builtins.readFile ./json/nixpkgs.json);
+  # Make sure this stays in sync with pinned-pkgs.nix
+  nixpkgs = builtins.fromJSON (builtins.readFile path);
 
 in import (pkgsOld.fetchFromGitHub {
   owner = "NixOS";

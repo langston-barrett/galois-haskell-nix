@@ -1,7 +1,7 @@
 # Overrides for using local versions of sources.
 # Good for hacking on multiple parts of the package set.
 { pkgsOld  ? import ./pinned-pkgs.nix { }
-, compiler ? "ghc843"
+, compiler ? "ghc844"
 }:
 
 haskellPackagesNew: haskellPackagesOld:

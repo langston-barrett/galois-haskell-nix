@@ -21,6 +21,12 @@ let
     otherwise = pkg;
   };
 
+  # Don't run tests for a package for a specific version of GHC
+  dontCheckOnGHC = ver: pkg: switchGHC {
+    "${ver}"  = hlib.dontCheck pkg;
+    otherwise = pkg;
+  };
+
   withSubdirs = pname: json: f: suffix:
     hmk (mkpkg {
       inherit json;
@@ -192,10 +198,8 @@ in {
     "ghc822"  = hlib.dontCheck haskellPackagesNew.hpack_0_29_6;
     otherwise = haskellPackagesOld.hpack;
   };
-  cabal2nix = switchGHC {
-    "ghc822"  = hlib.dontCheck haskellPackagesOld.cabal2nix;
-    otherwise = haskellPackagesOld.cabal2nix;
-  };
+  cabal2nix = dontCheckOnGHC "ghc822" haskellPackagesOld.cabal2nix;
+  cereal = dontCheckOnGHC "ghc844" haskellPackagesOld.cereal;
 
   # These are all as of the nixpkgs pinned in json/nixpkgs-ghc861.json.
   #

@@ -1,6 +1,6 @@
 # Overrides to the default Haskell package set for most Galois packages
 { pkgsOld  ? import ./pinned-pkgs.nix { }
-, compiler ? "ghc844"
+, compiler ? "ghc863"
 }:
 
 haskellPackagesNew: haskellPackagesOld:
@@ -60,10 +60,20 @@ in {
   # Need newer version, to override cabal2nix's inputs
   abcBridge = hmk ./abcBridge.nix { };
 
-  aig = hmk (mkpkg {
-    name = "aig";
-    json = ./json/saw/aig.json;
-  }) { };
+
+  # As of 2019-01, not ready for GHC 8.6 (base 4.12)
+  baseaig = hmk (mkpkg {
+      name = "aig";
+      json = ./json/saw/aig.json;
+    }) { };
+  # aig = hlib.doJailbreak (hmk (mkpkg {
+  #     name = "aig";
+  #     json = ./json/saw/aig.json;
+  #   })) { };
+    # in switchGHC {
+    #   "ghc863"  = hlib.doJailbreak baseaig;
+    #   otherwise = baseaig;
+    # };
 
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = hmk (mkpkg {
@@ -71,13 +81,18 @@ in {
     json = ./json/parameterized-utils.json;
   }) { };
 
-  saw-script = switchGHC {
-    "ghc843"  = hmk ./ghc843/saw-script.nix { };
-    otherwise = hmk (mkpkg {
-                  name = "saw-script";
-                  json = ./json/saw-script.json;
-                }) { };
-  };
+  saw-script = hmk (mkpkg {
+    name = "saw-script";
+    json = ./json/saw-script.json;
+  }) { };
+
+  # saw-script = switchGHC {
+  #   "ghc843"  = hmk ./ghc843/saw-script.nix { };
+  #   otherwise = hmk (mkpkg {
+  #                 name = "saw-script";
+  #                 json = ./json/saw-script.json;
+  #               }) { };
+  # };
 
   saw-core = hmk (mkpkg {
     name = "saw-core";
@@ -182,14 +197,35 @@ in {
 
   macaw-base         = macaw "base";
   macaw-x86          = macaw "x86";
-  macaw-symbolic     = switchGHC {
-    "ghc843"  = hmk ./ghc843/macaw-symbolic.nix { };
-    otherwise = macaw "symbolic";
-  };
-  macaw-x86-symbolic = switchGHC {
-    "ghc843"  = hmk ./ghc843/macaw-x86-symbolic.nix { };
-    otherwise = macaw "x86_symbolic";
-  };
+  # macaw-symbolic     = hmk (mkpkg {
+  #   name = "macaw-sybolic";
+  #   json = ./json/saw/macaw.json;
+  #   subdir = "symbolic";
+  # }) { };
+  # macaw-symbolic = hmk
+  #   ({ haskellPackages, fetchFromGitHub, callCabal2nix }:
+  #    let
+  #     fromJson = builtins.fromJSON (builtins.readFile ./json/saw/macaw.json);
+
+  #     src =
+  #       (fetchFromGitHub {
+  #         owner = "GaloisInc";
+  #         repo  = "macaw-symbolic";
+  #         inherit (fromJson) rev sha256;
+  #       });
+
+  #   in haskellPackages.callCabal2nix "macaw-symbolic" src { });
+
+  macaw-symbolic = macaw "symbolic";
+  macaw-x86-symbolic = macaw "x86_symbolic";
+  # macaw-symbolic     = switchGHC {
+  #   "ghc843"  = hmk ./ghc843/macaw-symbolic.nix { };
+  #   otherwise = macaw "symbolic";
+  # };
+  # macaw-x86-symbolic = switchGHC {
+  #   "ghc843"  = hmk ./ghc843/macaw-x86-symbolic.nix { };
+  #   otherwise = macaw "x86_symbolic";
+  # };
 
   ######################### External considerations
 
@@ -199,7 +235,12 @@ in {
     otherwise = haskellPackagesOld.hpack;
   };
   cabal2nix = dontCheckOnGHC "ghc822" haskellPackagesOld.cabal2nix;
-  cereal = dontCheckOnGHC "ghc844" haskellPackagesOld.cereal;
+
+  # These are all as of json/nixpkgs-master.json
+  # GHC 8.4.4
+  # aeson:         Requires contravariant >= 1.4.1 && <1.6
+  # cereal = dontCheckOnGHC "ghc844" haskellPackagesOld.cereal;
+  # aeson  = jailbreakOnGHC "ghc844" haskellPackagesOld.aeson;
 
   # These are all as of the nixpkgs pinned in json/nixpkgs-ghc861.json.
   #
@@ -210,11 +251,12 @@ in {
   # doctest:       Requires old GHC
   # unordered-c:   https://github.com/tibbe/unordered-containers/issues/214
   # hspec-core:    Needs nixpkgs update: https://github.com/hspec/hspec/issues/379
-  Glob          = jailbreakOnGHC "ghc861" haskellPackagesOld.Glob;
-  StateVar      = jailbreakOnGHC "ghc861" haskellPackagesOld.StateVar;
-  cabal-doctest = jailbreakOnGHC "ghc861" haskellPackagesOld.cabal-doctest;
-  contravariant = jailbreakOnGHC "ghc861" haskellPackagesOld.contravariant;
-  doctest       = jailbreakOnGHC "ghc861" haskellPackagesOld.doctest;
-  hspec-core    = jailbreakOnGHC "ghc861" haskellPackagesOld.hspec-core;
-  unordered-containers = jailbreakOnGHC "ghc861" haskellPackagesOld.unordered-containers;
+
+  # Glob          = jailbreakOnGHC "ghc861" haskellPackagesOld.Glob;
+  # StateVar      = jailbreakOnGHC "ghc861" haskellPackagesOld.StateVar;
+  # cabal-doctest = jailbreakOnGHC "ghc861" haskellPackagesOld.cabal-doctest;
+  # contravariant = jailbreakOnGHC "ghc861" haskellPackagesOld.contravariant;
+  # doctest       = jailbreakOnGHC "ghc861" haskellPackagesOld.doctest;
+  # hspec-core    = jailbreakOnGHC "ghc861" haskellPackagesOld.hspec-core;
+  # unordered-containers = jailbreakOnGHC "ghc861" haskellPackagesOld.unordered-containers;
 }

@@ -3,7 +3,7 @@
 let path = ./json/nixpkgs-master.json; in
 
 { pkgsOld   ? import ./pinned-pkgs.nix { inherit path; }
-, compiler  ? "ghc844"
+, compiler  ? "ghc863"
 , overrides ? import ./overrides-galois.nix { }
 }:
 

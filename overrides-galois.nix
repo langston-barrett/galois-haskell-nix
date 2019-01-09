@@ -165,7 +165,7 @@ in {
 
   llvm-verifier = dontCheck (hmk (mkpkg {
     name = "llvm-verifier";
-    json = ./json/saw/llvm-verifier.json;
+    json = ./json/llvm-verifier.json;
   }) { });
 
   llvm-pretty = hmk (mkpkg {

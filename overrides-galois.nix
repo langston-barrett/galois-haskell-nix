@@ -5,10 +5,42 @@
 
 haskellPackagesNew: haskellPackagesOld:
 let
+  hlib    = pkgsOld.haskell.lib;
+
+  # Wrappers
+  disableOptimization = pkg: hlib.appendConfigureFlag pkg "--disable-optimization"; # In newer nixpkgs
+  wrappers = rec {
+    jailbreak = x: x; # TODO
+    fast = x: disableOptimization (hlib.linkWithGold (hlib.disableLibraryProfiling x));
+    exe = x: hlib.justStaticExecutables (fast x);
+  };
+
+  # Main builder function. Reads in a JSON describing the git revision and
+  # SHA256 to fetch, then calls cabal2nix on the source.
+  mk =
+    { name
+    , json
+    , owner ? "GaloisInc"
+    , repo ? name
+    , subdir ? ""
+    , sourceFilesBySuffices ? x: y: x
+    , wrapper ? wrappers.fast
+    }:
+
+    let
+      fromJson = builtins.fromJSON (builtins.readFile json);
+
+      src = sourceFilesBySuffices
+        ((pkgsOld.fetchFromGitHub {
+          inherit owner repo;
+          inherit (fromJson) rev sha256;
+        }) + "/" + subdir) [".hs" "LICENSE" "cabal" ".c"];
+
+    in builtins.trace ("Building: " + name)
+         (wrapper
+          (haskellPackagesNew.callCabal2nix name src { }));
+
   abc       = pkgsOld.callPackage ./abc.nix { };
-  hmk       = haskellPackagesNew.callPackage;
-  # hmk       = x: y: haskellPackagesNew.callPackage (mkpkg x) y;
-  hlib      = pkgsOld.haskell.lib;
   mkpkg     = import ./mkpkg.nix;
   dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
 
@@ -21,13 +53,12 @@ let
     otherwise = pkg;
   };
 
-  withSubdirs = pname: json: f: suffix:
-    hmk (mkpkg {
-      inherit json;
-      name   = pname + suffix;
-      repo   = pname;
-      subdir = f suffix;
-    }) { };
+  withSubdirs = pname: json: f: suffix: mk {
+    inherit json;
+    name   = pname + suffix;
+    repo   = pname;
+    subdir = f suffix;
+  };
 
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
@@ -37,12 +68,12 @@ let
   macaw = withSubdirs "macaw" ./json/saw/macaw.json (suffix: suffix);
 
   # A package in a subdirectory of Crucible
-  useCrucible = name: hmk (mkpkg {
+  useCrucible = name: mk {
       inherit name;
       json   = ./json/saw/crucible.json;
       repo   = "crucible";
       subdir = name;
-  }) { };
+  };
 
   # We disable tests because they rely on external SMT solvers
   what4 = suffix:
@@ -52,57 +83,58 @@ let
 in {
 
   # Need newer version, to override cabal2nix's inputs
-  abcBridge = hmk ./abcBridge.nix { };
+  abcBridge = haskellPackagesNew.callPackage ./abcBridge.nix { };
 
-  aig = hmk (mkpkg {
+  aig = mk {
     name = "aig";
     json = ./json/aig.json;
-  }) { };
-
-  # The version on Hackage should work, its just not in nixpkgs yet
-  parameterized-utils = hmk (mkpkg {
-    name = "parameterized-utils";
-    json = ./json/parameterized-utils.json;
-  }) { };
-
-  saw-script = switchGHC {
-    "ghc843"  = hmk ./ghc843/saw-script.nix { };
-    otherwise = hmk (mkpkg {
-                  name = "saw-script";
-                  json = ./json/saw-script.json;
-                }) { };
   };
 
-  saw-core = hmk (mkpkg {
+  # The version on Hackage should work, its just not in nixpkgs yet
+  parameterized-utils = mk {
+    name = "parameterized-utils";
+    json = ./json/parameterized-utils.json;
+    wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
+  };
+
+  saw-script = wrappers.exe (switchGHC {
+    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/saw-script.nix;
+    otherwise = mk {
+      name    = "saw-script";
+      json    = ./json/saw-script.json;
+    };
+  });
+
+  saw-core = mk {
     name = "saw-core";
     json = ./json/saw-core.json;
-  }) { };
+  };
 
-  saw-core-aig = hmk (mkpkg {
+  saw-core-aig = mk {
     name = "saw-core-aig";
     json = ./json/saw-core-aig.json;
-  }) { };
+  };
 
   # This one takes a long time to build
-  saw-core-sbv = hmk (mkpkg {
+  saw-core-sbv = mk {
     name = "saw-core-sbv";
     json = ./json/saw-core-sbv.json;
-  }) { };
+  };
 
-  saw-core-what4 = hmk (mkpkg {
+  saw-core-what4 = mk {
     name = "saw-core-what4";
     json = ./json/saw-core-what4.json;
-  }) { };
+  };
 
   # crucible-server = crucibleF "server";
   crucible        = crucibleF "";
-  crucible-c      = crucibleF "c";
+  crucible-c      = wrappers.exe (crucibleF "c");
   crucible-jvm    = dontCheck (crucibleF "jvm");
   crucible-saw    = crucibleF "saw";
   # crucible-syntax = crucibleF "syntax";
   crux            = useCrucible "crux";
   crucible-llvm   = hlib.doJailbreak (switchGHC {
-    "ghc843"  = hmk ./ghc843/crucible-llvm.nix { };
+    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/crucible-llvm.nix { };
     otherwise = dontCheck (crucibleF "llvm");
   });
 
@@ -119,69 +151,70 @@ in {
   # Cryptol needs base-compat < 0.10, version is 0.10.4
   cryptol = hlib.doJailbreak haskellPackagesOld.cryptol;
 
-  cryptol-verifier = hmk (mkpkg {
+  cryptol-verifier = mk {
     name = "cryptol-verifier";
     json = ./json/cryptol-verifier.json;
-  }) { };
+  };
 
-  elf-edit = hmk (mkpkg {
+  elf-edit = mk {
     name = "elf-edit";
     json = ./json/elf-edit.json;
-  }) { };
+  };
 
-  flexdis86 = hmk (mkpkg {
+  flexdis86 = (mk {
     name = "flexdis86";
     json = ./json/flexdis86.json;
-  }) { };
+  });
 
-  binary-symbols = hmk (mkpkg {
+  binary-symbols = mk {
     name   = "binary-symbols";
     repo   = "flexdis86";
     subdir = "binary-symbols";
     json   = ./json/flexdis86.json;
-  }) { };
+  };
 
-  galois-dwarf = hmk (mkpkg {
+  galois-dwarf = mk {
     name = "dwarf";
     json = ./json/dwarf.json;
-  }) { };
+  };
 
   # Hackage version broken
-  jvm-parser = hmk (mkpkg {
+  jvm-parser = mk {
     name = "jvm-parser";
     json = ./json/jvm-parser.json;
-  }) { };
+  };
 
-  jvm-verifier = dontCheck (hmk (mkpkg {
+  jvm-verifier = mk {
     name = "jvm-verifier";
     json = ./json/jvm-verifier.json;
-  }) { });
+    wrapper = hlib.dontCheck;
+  };
 
   # Tests fail because they lack llvm-as
-  llvm-pretty-bc-parser = dontCheck (hmk (mkpkg {
+  llvm-pretty-bc-parser = mk {
     name = "llvm-pretty-bc-parser";
     json = ./json/llvm-pretty-bc-parser.json;
-  }) { });
+  };
 
-  llvm-verifier = dontCheck (hmk (mkpkg {
+  llvm-verifier = mk {
     name = "llvm-verifier";
     json = ./json/llvm-verifier.json;
-  }) { });
+  };
 
-  llvm-pretty = hmk (mkpkg {
+  llvm-pretty = mk {
     name = "llvm-pretty";
     owner = "elliottt";
     json = ./json/llvm-pretty.json;
-  }) { };
+  };
 
   macaw-base         = macaw "base";
   macaw-x86          = macaw "x86";
   macaw-symbolic     = switchGHC {
-    "ghc843"  = hmk ./ghc843/macaw-symbolic.nix { };
+    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/macaw-symbolic.nix { };
     otherwise = macaw "symbolic";
   };
   macaw-x86-symbolic = switchGHC {
-    "ghc843"  = hmk ./ghc843/macaw-x86-symbolic.nix { };
+    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/macaw-x86-symbolic.nix { };
     otherwise = macaw "x86_symbolic";
   };
 

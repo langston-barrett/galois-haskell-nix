@@ -22,6 +22,7 @@ in {
   crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible);
   saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
   llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
+  macaw-symbolic = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
 
   # Trying crucible-syntax (needs newer megaparsec than in nixpkgs)
   # what4 = alterSrc haskellPackagesOld.what4 (../crucible/what4);

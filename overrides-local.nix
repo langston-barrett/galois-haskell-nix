@@ -1,7 +1,7 @@
 # Overrides for using local versions of sources.
 # Good for hacking on multiple parts of the package set.
 { pkgsOld  ? import ./pinned-pkgs.nix { }
-, compiler ? "ghc843"
+, compiler # ? "ghc843"
 }:
 
 haskellPackagesNew: haskellPackagesOld:
@@ -19,10 +19,14 @@ let
 in {
   # crucible       = alterSrc haskellPackagesOld.crucible (../crucible);
 
-  crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible);
   saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
-  llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
-  macaw-symbolic = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
+  # llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
+  # crucible  = alterSrc haskellPackagesOld.crucible (../crucible/crucible);
+    # otherwise = (crucibleF "llvm").overrideAttrs (oldAttrs: {
+    #   postUnpack = "sourceRoot+=/crucible-llvm; echo source root reset to $sourceRoot";
+    # });
+  # crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible/crucible-llvm);
+  # macaw-symbolic = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
 
   # Trying crucible-syntax (needs newer megaparsec than in nixpkgs)
   # what4 = alterSrc haskellPackagesOld.what4 (../crucible/what4);

@@ -1,0 +1,7 @@
+{
+  "url": "ssh://git@github.com/GaloisInc/abcBridge",
+  "rev": "e5b6ddc63349c8b676771be672a40521f63aa8b3",
+  "date": "2018-12-28T17:03:24-08:00",
+  "sha256": "0nx4ff5j2vycy4x7bb5aks36jvafhdai1awa77a5bjqmhxzhnd58",
+  "fetchSubmodules": true
+}

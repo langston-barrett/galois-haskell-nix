@@ -10,8 +10,9 @@ let
   src = fetchgit {
     url = "https://github.com/GaloisInc/abcBridge.git";
     deepClone = true;
-    rev = "a4413485354cb1d3d5f9c3076f06628a7b481968";
-    sha256 = "1w14qm92wy9qjil5dfj9a69073jivvj02c8ybycyazwpflzwqk3l";
+    rev = "e5b6ddc63349c8b676771be672a40521f63aa8b3";
+    # 1w14qm92wy9qjil5dfj9a69073jivvj02c8ybycyazwpflzwqk3l
+    sha256 = "0clfbzd9zjbyyy97mxz0d0ypj987h6vw432nbsn9259zq0cb18r3";
   };
 in mkDerivation {
   inherit src;

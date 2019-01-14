@@ -1,6 +1,6 @@
 # Overrides to the default Haskell package set for most Galois packages
 { pkgsOld  ? import ./pinned-pkgs.nix { }
-, compiler ? "ghc843"
+, compiler # ? "ghc843"
 }:
 
 haskellPackagesNew: haskellPackagesOld:
@@ -10,9 +10,12 @@ let
   # Wrappers
   disableOptimization = pkg: hlib.appendConfigureFlag pkg "--disable-optimization"; # In newer nixpkgs
   wrappers = rec {
-    jailbreak = x: x; # TODO
-    fast = x: disableOptimization (hlib.linkWithGold (hlib.disableLibraryProfiling x));
-    exe = x: hlib.justStaticExecutables (fast x);
+    noprof = x: hlib.disableExecutableProfiling (hlib.disableLibraryProfiling x);
+    notest = x: hlib.dontCheck (noprof x);
+    fast = x: disableOptimization (notest x);
+    exe = x: hlib.justStaticExecutables (wrappers.default x);
+    jailbreak = x: hlib.doJailbreak (wrappers.default x);
+    default = fast;
   };
 
   # Main builder function. Reads in a JSON describing the git revision and
@@ -24,7 +27,7 @@ let
     , repo ? name
     , subdir ? ""
     , sourceFilesBySuffices ? x: y: x
-    , wrapper ? wrappers.fast
+    , wrapper ? wrappers.default
     }:
 
     let
@@ -55,24 +58,25 @@ let
 
   withSubdirs = pname: json: f: suffix: mk {
     inherit json;
-    name   = pname + suffix;
+    name   = pname + "-" + suffix;
     repo   = pname;
     subdir = f suffix;
   };
 
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
-  crucibleF = withSubdirs "crucible" ./json/saw/crucible.json
-                (suffix: "crucible" + maybeSuffix suffix);
 
-  macaw = withSubdirs "macaw" ./json/saw/macaw.json (suffix: suffix);
+  crucibleSrc = ./json/crucible.json;
+  crucibleF = withSubdirs "crucible" crucibleSrc
+                (suffix: "crucible" + maybeSuffix suffix);
 
   # A package in a subdirectory of Crucible
   useCrucible = name: mk {
-      inherit name;
-      json   = ./json/saw/crucible.json;
-      repo   = "crucible";
-      subdir = name;
+    inherit name;
+    json   = crucibleSrc;
+    repo   = "crucible";
+    subdir = name;
+    wrapper = wrappers.noprof;
   };
 
   # We disable tests because they rely on external SMT solvers
@@ -80,14 +84,20 @@ let
     let name = "what4" + maybeSuffix suffix;
     in dontCheck (useCrucible name);
 
+  macaw = withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
+
 in {
 
   # Need newer version, to override cabal2nix's inputs
-  abcBridge = haskellPackagesNew.callPackage ./abcBridge.nix { };
+  abcBridge = wrappers.default (haskellPackagesNew.callPackage ./abcBridge.nix { });
 
   aig = mk {
     name = "aig";
     json = ./json/aig.json;
+    wrapper = switchGHC {
+      "ghc863"  = wrappers.jailbreak;
+      otherwise = wrappers.default;
+    };
   };
 
   # The version on Hackage should work, its just not in nixpkgs yet
@@ -128,15 +138,18 @@ in {
 
   # crucible-server = crucibleF "server";
   crucible        = crucibleF "";
-  crucible-c      = wrappers.exe (crucibleF "c");
+  crucible-c      = wrappers.notest (crucibleF "c");
   crucible-jvm    = dontCheck (crucibleF "jvm");
   crucible-saw    = crucibleF "saw";
   # crucible-syntax = crucibleF "syntax";
   crux            = useCrucible "crux";
-  crucible-llvm   = hlib.doJailbreak (switchGHC {
+  crucible-llvm   = switchGHC {
     "ghc843"  = haskellPackagesNew.callPackage ./ghc843/crucible-llvm.nix { };
-    otherwise = dontCheck (crucibleF "llvm");
-  });
+    otherwise = (crucibleF "llvm");
+    # otherwise = (crucibleF "llvm").overrideAttrs (oldAttrs: {
+    #   postUnpack = "sourceRoot+=/crucible-llvm; echo source root reset to $sourceRoot";
+    # });
+  };
 
   what4     = what4 "";
   what4-sbv = what4 "sbv";
@@ -228,6 +241,31 @@ in {
   cabal2nix = switchGHC {
     "ghc822"  = hlib.dontCheck haskellPackagesOld.cabal2nix;
     otherwise = haskellPackagesOld.cabal2nix;
+  };
+
+  # These are all as of the nixpkgs pinned in json/nixpkgs-master.json.
+  # aeson:        ???
+  # cereal:       failing test
+  # ref-fd:       stm >= 2.1 && <2.5
+  # monad-supply: fails on MonadFailDesugaring
+  aeson  = switchGHC {
+    "ghc844" = wrappers.jailbreak haskellPackagesOld.aeson; # contravariant?
+    otherwise = haskellPackagesOld.aeson;
+  };
+  cereal = switchGHC {
+    "ghc844"  = hlib.dontCheck haskellPackagesOld.cereal;
+    otherwise = haskellPackagesOld.cereal;
+  };
+
+  ref-fd = switchGHC {
+    "ghc863"  = wrappers.jailbreak haskellPackagesOld.ref-fd;
+    otherwise = haskellPackagesOld.ref-fd;
+  };
+
+  # We intentionally break this:
+  monad-supply = switchGHC {
+    "ghc863"  = haskellPackagesOld.contravariant;
+    otherwise = haskellPackagesOld.monad-supply;
   };
 
   # These are all as of the nixpkgs pinned in json/nixpkgs-ghc861.json.

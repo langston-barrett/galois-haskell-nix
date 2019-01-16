@@ -10,7 +10,8 @@ let
   # Wrappers
   disableOptimization = pkg: hlib.appendConfigureFlag pkg "--disable-optimization"; # In newer nixpkgs
   wrappers = rec {
-    noprof = x: hlib.disableExecutableProfiling (hlib.disableLibraryProfiling x);
+    nocov  = x: hlib.dontCoverage x;
+    noprof = x: hlib.disableExecutableProfiling (hlib.disableLibraryProfiling (nocov x));
     notest = x: hlib.dontCheck (noprof x);
     fast = x: disableOptimization (notest x);
     exe = x: hlib.justStaticExecutables (wrappers.default x);
@@ -94,10 +95,11 @@ in {
   aig = mk {
     name = "aig";
     json = ./json/aig.json;
-    wrapper = switchGHC {
-      "ghc863"  = wrappers.jailbreak;
-      otherwise = wrappers.default;
-    };
+    wrapper = wrappers.jailbreak;
+    # wrapper = switchGHC {
+    #   "ghc863"  = wrappers.jailbreak;
+    #   otherwise = wrappers.default;
+    # };
   };
 
   # The version on Hackage should work, its just not in nixpkgs yet

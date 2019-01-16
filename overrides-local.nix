@@ -1,7 +1,7 @@
 # Overrides for using local versions of sources.
 # Good for hacking on multiple parts of the package set.
 { pkgsOld  ? import ./pinned-pkgs.nix { }
-, compiler # ? "ghc843"
+, compiler # ? "ghc844"
 }:
 
 haskellPackagesNew: haskellPackagesOld:
@@ -24,7 +24,7 @@ in {
   saw-core = alterSrc haskellPackagesOld.saw-core (../saw-core);
   saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
   llvm-verifier = alterSrc haskellPackagesOld.llvm-verifier (../llvm-verifier);
-  llvm-pretty = alterSrc haskellPackagesOld.llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
+  # llvm-pretty = alterSrc haskellPackagesOld.llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
   # llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
 
   # Trying crucible-syntax (needs newer megaparsec than in nixpkgs)

@@ -17,7 +17,7 @@ let
   };
 
   # Make sure this matches the one in pinned-pkgs.nix (TODO: put in separate file?)!
-  nixpkgs = builtins.fromJSON (builtins.readFile ./json/nixpkgs-master.json);
+  nixpkgs = builtins.fromJSON (builtins.readFile ./json/nixpkgs/18.09.json);
 
 in import (pkgsOld.fetchFromGitHub {
   owner = "NixOS";

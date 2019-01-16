@@ -4,6 +4,10 @@
 }:
 
 haskellPackagesNew: haskellPackagesOld:
+
+#################################################################
+# ** Utilities and functions
+
 let
   hlib    = pkgsOld.haskell.lib;
 
@@ -88,6 +92,9 @@ let
   macaw = withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
 
 in {
+
+#################################################################
+# ** Galois libraries
 
   # Need newer version, to override cabal2nix's inputs
   abcBridge = wrappers.default (haskellPackagesNew.callPackage ./abcBridge.nix { });
@@ -233,7 +240,8 @@ in {
     otherwise = macaw "x86_symbolic";
   };
 
-  ######################### External considerations
+#################################################################
+# ** Hackage dependencies
 
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
   hpack     = switchGHC {
@@ -251,10 +259,12 @@ in {
   # ref-fd:       stm >= 2.1 && <2.5
   # monad-supply: fails on MonadFailDesugaring
   aeson  = switchGHC {
+    "ghc843" = wrappers.jailbreak haskellPackagesOld.aeson; # contravariant?
     "ghc844" = wrappers.jailbreak haskellPackagesOld.aeson; # contravariant?
     otherwise = haskellPackagesOld.aeson;
   };
   cereal = switchGHC {
+    "ghc843"  = hlib.dontCheck haskellPackagesOld.cereal;
     "ghc844"  = hlib.dontCheck haskellPackagesOld.cereal;
     otherwise = haskellPackagesOld.cereal;
   };
@@ -287,7 +297,8 @@ in {
   hspec-core    = jailbreakOnGHC "ghc861" haskellPackagesOld.hspec-core;
   unordered-containers = jailbreakOnGHC "ghc861" haskellPackagesOld.unordered-containers;
 
-  ######################### Tools
+#################################################################
+# ** Tools
 
   # Status: not ready for GHC 8.6
 

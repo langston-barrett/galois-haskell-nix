@@ -286,4 +286,25 @@ in {
   doctest       = jailbreakOnGHC "ghc861" haskellPackagesOld.doctest;
   hspec-core    = jailbreakOnGHC "ghc861" haskellPackagesOld.hspec-core;
   unordered-containers = jailbreakOnGHC "ghc861" haskellPackagesOld.unordered-containers;
+
+  ######################### Tools
+
+  # Status: not ready for GHC 8.6
+
+  haskell-code-explorer = mk {
+    name = "haskell-code-explorer";
+    owner = "alexwl";
+    json = ./json/haskell-code-explorer.json;
+  };
+
+  # cabal-helper    = hlib.doJailbreak (mk {
+  #   name = "cabal-helper";
+  #   owner = "DanielG";
+  #   json = ./json/cabal-helper.json;
+  #   wrapper = x: wrappers.jailbreak (wrappers.default x);
+  # });
+
+  # haskell-code-explorer
+  cabal-helper    = wrappers.jailbreak haskellPackagesOld.cabal-helper;
+  haddock-library = wrappers.jailbreak haskellPackagesOld.haddock-library;
 }

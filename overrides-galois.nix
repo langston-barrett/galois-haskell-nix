@@ -269,6 +269,10 @@ in {
     "ghc844"  = hlib.dontCheck haskellPackagesOld.cereal;
     otherwise = haskellPackagesOld.cereal;
   };
+  polyparse  = switchGHC {
+    "ghc861" = wrappers.jailbreak haskellPackagesOld.polyparse; # base <4.12
+    otherwise = haskellPackagesOld.polyparse;
+  };
 
   ref-fd = switchGHC {
     "ghc863"  = wrappers.jailbreak haskellPackagesOld.ref-fd;

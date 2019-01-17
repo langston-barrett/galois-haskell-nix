@@ -9,8 +9,7 @@ haskellPackagesNew: haskellPackagesOld:
 # ** Utilities and functions
 
 let
-  hlib      = pkgsOld.haskell.lib;
-  dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
+  hlib = pkgsOld.haskell.lib;
 
   # For packages that have different behavior for different GHC versions
   switchGHC = arg: arg."${compiler}" or arg.otherwise;
@@ -88,13 +87,12 @@ let
     json   = crucibleSrc;
     repo   = "crucible";
     subdir = name;
-    wrapper = wrappers.noprof;
   };
 
   # We disable tests because they rely on external SMT solvers
   what4 = suffix:
     let name = "what4" + maybeSuffix suffix;
-    in dontCheck (useCrucible name);
+    in useCrucible name;
 
   macaw = withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
 
@@ -110,11 +108,32 @@ in {
     name = "aig";
     json = ./json/aig.json;
     wrapper = wrappers.jailbreakDefault;
-    # wrapper = switchGHC {
-    #   "ghc863"  = wrappers.jailbreak;
-    #   otherwise = wrappers.default;
-    # };
   };
+
+  binary-symbols = mk {
+    name   = "binary-symbols";
+    repo   = "flexdis86";
+    subdir = "binary-symbols";
+    json   = ./json/flexdis86.json;
+  };
+
+  # Cryptol needs base-compat < 0.10, version is 0.10.4
+  cryptol = wrappers.jailbreakDefault haskellPackagesOld.cryptol;
+
+  cryptol-verifier = addABC (mk {
+    name = "cryptol-verifier";
+    json = ./json/cryptol-verifier.json;
+  });
+
+  elf-edit = mk {
+    name = "elf-edit";
+    json = ./json/elf-edit.json;
+  };
+
+  flexdis86 = (mk {
+    name = "flexdis86";
+    json = ./json/flexdis86.json;
+  });
 
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = mk {
@@ -124,13 +143,11 @@ in {
     wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
   };
 
-  saw-script = wrappers.exe (switchGHC {
-    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/saw-script.nix;
-    otherwise = mk {
-      name    = "saw-script";
-      json    = ./json/saw-script.json;
-    };
-  });
+  saw-script = mk {
+    name    = "saw-script";
+    json    = ./json/saw-script.json;
+    wrapper = wrappers.exe;
+  };
 
   saw-core = mk {
     name = "saw-core";
@@ -155,43 +172,14 @@ in {
 
   # crucible-server = crucibleF "server";
   crucible        = crucibleF "";
-  crucible-c      = wrappers.notest (crucibleF "c");
-  crucible-jvm    = dontCheck (crucibleF "jvm");
+  crucible-c      = crucibleF "c";
+  crucible-jvm    = crucibleF "jvm";
   crucible-saw    = crucibleF "saw";
   # crucible-syntax = crucibleF "syntax";
   crux            = useCrucible "crux";
   crucible-llvm   = switchGHC {
     "ghc843"  = haskellPackagesNew.callPackage ./ghc843/crucible-llvm.nix { };
     otherwise = (crucibleF "llvm");
-  };
-
-  what4     = what4 "";
-  what4-sbv = what4 "sbv";
-  what4-abc = addABC (what4 "abc");
-
-  # Cryptol needs base-compat < 0.10, version is 0.10.4
-  cryptol = wrappers.jailbreakDefault haskellPackagesOld.cryptol;
-
-  cryptol-verifier = addABC (mk {
-    name = "cryptol-verifier";
-    json = ./json/cryptol-verifier.json;
-  });
-
-  elf-edit = mk {
-    name = "elf-edit";
-    json = ./json/elf-edit.json;
-  };
-
-  flexdis86 = (mk {
-    name = "flexdis86";
-    json = ./json/flexdis86.json;
-  });
-
-  binary-symbols = mk {
-    name   = "binary-symbols";
-    repo   = "flexdis86";
-    subdir = "binary-symbols";
-    json   = ./json/flexdis86.json;
   };
 
   galois-dwarf = mk {
@@ -205,11 +193,10 @@ in {
     json = ./json/jvm-parser.json;
   };
 
-  jvm-verifier = mk {
+  jvm-verifier = addABC (mk {
     name = "jvm-verifier";
     json = ./json/jvm-verifier.json;
-    wrapper = hlib.dontCheck;
-  };
+  });
 
   # Tests fail because they lack llvm-as
   llvm-pretty-bc-parser = mk {
@@ -238,6 +225,10 @@ in {
     "ghc843"  = haskellPackagesNew.callPackage ./ghc843/macaw-x86-symbolic.nix { };
     otherwise = macaw "x86_symbolic";
   };
+
+  what4     = what4 "";
+  what4-sbv = what4 "sbv";
+  what4-abc = addABC (what4 "abc");
 
 #################################################################
 # ** Hackage dependencies

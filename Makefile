@@ -1,8 +1,10 @@
 PKGS ?= \
   abcBridge \
+  aig \
   binary-symbols \
   cryptol \
   crucible \
+  crucible-c \
   crucible-jvm \
   crucible-llvm \
   crucible-saw \
@@ -13,6 +15,7 @@ PKGS ?= \
   flexdis86 \
   galois-dwarf \
   jvm-parser \
+  jvm-verifier \
   llvm-pretty \
   llvm-pretty-bc-parser \
   llvm-verifier \
@@ -25,32 +28,36 @@ PKGS ?= \
   saw-core \
   saw-core-aig \
   saw-core-sbv \
-  what4
+  saw-core-what4 \
+  what4 \
+  what4-abc \
+  what4-sbv
 
 # This doesn't exactly match to_build, because multiple projects are in the same
 # git repo.
 #
-# Additionally, abcBridge and llvm-pretty are handled manually.
+# Additionally, abcBridge is handled manually.
 #
 # TODO: This is unused. Should make update-all target.
 JSON ?= \
+  crucible \
   cryptol \
+  cryptol-verifier \
+  dwarf \
+  elf-edit \
+  flexdis86 \
+  jvm-parser \
+  jvm-verifier \
+  llvm-pretty \
+  llvm-pretty-bc-parser \
+  llvm-verifier \
+  macaw \
   parameterized-utils \
-  saw-script \
   saw-core \
   saw-core-aig \
   saw-core-sbv \
   saw-core-what4 \
-  crucible \
-  cryptol-verifier \
-  elf-edit \
-  flexdis86 \
-  dwarf \
-  jvm-parser \
-  jvm-verifier \
-  llvm-pretty-bc-parser \
-  llvm-verifier \
-  macaw
+  saw-script
 
 .PHONY: travis
 travis:

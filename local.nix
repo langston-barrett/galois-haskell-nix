@@ -1,6 +1,6 @@
 # Compose the default (galois) overrides with ones for local sources
 { pkgsOld  ? import ./pinned-pkgs.nix { }
-, compiler ? "ghc863"
+, compiler ? "ghc843"
 }:
 
 let

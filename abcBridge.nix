@@ -12,7 +12,7 @@ let
     deepClone = true;
     rev = "e5b6ddc63349c8b676771be672a40521f63aa8b3";
     # 1w14qm92wy9qjil5dfj9a69073jivvj02c8ybycyazwpflzwqk3l
-    sha256 = "0clfbzd9zjbyyy97mxz0d0ypj987h6vw432nbsn9259zq0cb18r3";
+    sha256 = "0sb95f5krgl2xkz19fv4rr6c0hs2ypd70g9yqr8nl5r4rb37nmsm";
   };
 in mkDerivation {
   inherit src;

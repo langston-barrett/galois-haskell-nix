@@ -1,6 +1,6 @@
 # This file overrides the Haskell package set with the given overrides.
 { pkgsOld   ? import ./pinned-pkgs.nix { }
-, compiler  ? "ghc861"
+, compiler  ? "ghc843"
 , overrides ? import ./overrides-galois.nix { inherit compiler; }
 }:
 

@@ -9,7 +9,7 @@ use these builds, import this package set in your Nix file and access its
       galoisHaskell = import ../path/to/galois-haskell-nix/default.nix { };
     in stdenv.mkDerivation {
       buildInputs = [
-        galoisHaskell.haskellPackages.crucible-jvm
+        galoisHaskell.haskellPackages.crucible-llvm
       ];
     }
   #+end_src
@@ -19,10 +19,10 @@ use these builds, import this package set in your Nix file and access its
    You can specify which compiler you'd like to use in =default.nix= or
    =local.nix=.
 
-   - GHC 8.2.2: Error while building macaw. To be investigated...
-   - GHC 8.4.3: Fully supported. There is [[https://ghc.haskell.org/trac/ghc/ticket/15186][a bug]] in this version of GHC
+   - GHC 8.2.*: Error while building macaw. To be investigated...
+   - GHC 8.4.*: Fully supported. There is [[https://ghc.haskell.org/trac/ghc/ticket/15186][a bug]] in this version of GHC
      that forces us to build without profiling enabled.
-   - GHC 8.6.1: Unsupported. Too many upstream dependencies aren't ready.
+   - GHC 8.6.*: Unsupported. Too many upstream dependencies aren't ready.
 
 ** Hacking
 
@@ -69,8 +69,39 @@ use these builds, import this package set in your Nix file and access its
 
 ** TODO TODO
 
-  - Test with multiple versions of nixpkgs
   - See what manually-edited Nix files can be removed
   - Update all packages
-  - Don't haddock anything
-  - Figure out linking with gold
+
+** Status
+
+   This section lists all the projects that currently build successfully.
+   It can be regenerated with ~make status~.
+   Last updated on 2019-01-16.
+
+   - abcBridge: ☑
+   - binary-symbols: ☑
+   - cryptol: ☑
+   - crucible: ☑
+   - crucible-jvm: ☑
+   - crucible-llvm: ☑
+   - crucible-saw: ☑
+   - crux: ☑
+   - cryptol: ☑
+   - cryptol-verifier: ☐
+   - elf-edit: ☑
+   - flexdis86: ☑
+   - galois-dwarf: ☑
+   - jvm-parser: ☑
+   - llvm-pretty: ☑
+   - llvm-pretty-bc-parser: ☑
+   - llvm-verifier: ☐
+   - macaw-base: ☑
+   - macaw-symbolic: ☑
+   - macaw-x86: ☑
+   - macaw-x86-symbolic: ☑
+   - parameterized-utils: ☑
+   - saw-script: ☐
+   - saw-core: ☑
+   - saw-core-aig: ☑
+   - saw-core-sbv: ☑
+   - what4: ☑

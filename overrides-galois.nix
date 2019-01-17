@@ -70,7 +70,7 @@ let
 
   withSubdirs = pname: json: f: suffix: mk {
     inherit json;
-    name   = pname + "-" + suffix;
+    name   = pname + maybeSuffix suffix;
     repo   = pname;
     subdir = f suffix;
   };
@@ -143,11 +143,11 @@ in {
     wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
   };
 
-  saw-script = mk {
+  saw-script = addABC (mk {
     name    = "saw-script";
     json    = ./json/saw-script.json;
     wrapper = wrappers.exe;
-  };
+  });
 
   saw-core = mk {
     name = "saw-core";

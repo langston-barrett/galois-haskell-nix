@@ -102,7 +102,7 @@ use these builds, import this package set in your Nix file and access its
    - macaw-x86: ☑
    - macaw-x86-symbolic: ☑
    - parameterized-utils: ☑
-   - saw-script: ☐
+   - saw-script: ☑
    - saw-core: ☑
    - saw-core-aig: ☑
    - saw-core-sbv: ☑

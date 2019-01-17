@@ -19,7 +19,8 @@ let
     notest = x: hlib.dontCheck (noprof x);
     fast = x: disableOptimization (notest x);
     exe = x: hlib.justStaticExecutables (wrappers.default x);
-    jailbreak = x: hlib.doJailbreak (wrappers.default x);
+    jailbreak = x: hlib.doJailbreak x;
+    jailbreakDefault = x: wrappers.jailbreak (wrappers.default x);
     default = fast;
   };
 
@@ -57,7 +58,7 @@ let
 
   # Jailbreak a package for a specific version of GHC
   jailbreakOnGHC = ver: pkg: switchGHC {
-    "${ver}"  = hlib.dontCheck (hlib.doJailbreak pkg);
+    "${ver}"  = wrappers.jailbreak pkg;
     otherwise = pkg;
   };
 
@@ -102,7 +103,7 @@ in {
   aig = mk {
     name = "aig";
     json = ./json/aig.json;
-    wrapper = wrappers.jailbreak;
+    wrapper = wrappers.jailbreakDefault;
     # wrapper = switchGHC {
     #   "ghc863"  = wrappers.jailbreak;
     #   otherwise = wrappers.default;
@@ -171,7 +172,7 @@ in {
   });
 
   # Cryptol needs base-compat < 0.10, version is 0.10.4
-  cryptol = hlib.doJailbreak haskellPackagesOld.cryptol;
+  cryptol = wrappers.jailbreakDefault haskellPackagesOld.cryptol;
 
   cryptol-verifier = mk {
     name = "cryptol-verifier";
@@ -305,7 +306,7 @@ in {
   haskell-code-explorer = mk {
     name = "haskell-code-explorer";
     owner = "alexwl";
-    json = ./json/haskell-code-explorer.json;
+    json = ./json/tools/haskell-code-explorer.json;
   };
 
   # cabal-helper    = hlib.doJailbreak (mk {

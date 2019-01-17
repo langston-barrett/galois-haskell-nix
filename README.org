@@ -55,10 +55,13 @@ use these builds, import this package set in your Nix file and access its
       miracle of Nix, the builds will succeed in CI iff they succeed locally (modulo
       timeouts, which are very frequent).
 
-    - =%.json= will update the pinned version of a dependency. For example, the
-      following would update the version of Macaw::
+    - =%.json.master= will update the pinned version of a dependency. For
+      example, the following would update the version of Macaw::
 
-      rm macaw.json && make macaw.json
+      make macaw.json.master
+
+    - =%.json.saw= will update a dependency to the version pinned as a submodule
+      in =saw-script=.
 
     - =travis= regenerates =.travis.yml=
 

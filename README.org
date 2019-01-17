@@ -76,7 +76,7 @@ use these builds, import this package set in your Nix file and access its
 
    This section lists all the projects that currently build successfully.
    It can be regenerated with ~make status~.
-   Last updated on 2019-01-16.
+   Last updated on 2019-01-17.
 
    - abcBridge: ☑
    - binary-symbols: ☑
@@ -87,14 +87,14 @@ use these builds, import this package set in your Nix file and access its
    - crucible-saw: ☑
    - crux: ☑
    - cryptol: ☑
-   - cryptol-verifier: ☐
+   - cryptol-verifier: ☑
    - elf-edit: ☑
    - flexdis86: ☑
    - galois-dwarf: ☑
    - jvm-parser: ☑
    - llvm-pretty: ☑
    - llvm-pretty-bc-parser: ☑
-   - llvm-verifier: ☐
+   - llvm-verifier: ☑
    - macaw-base: ☑
    - macaw-symbolic: ☑
    - macaw-x86: ☑

@@ -9,7 +9,17 @@ haskellPackagesNew: haskellPackagesOld:
 # ** Utilities and functions
 
 let
-  hlib    = pkgsOld.haskell.lib;
+  hlib      = pkgsOld.haskell.lib;
+  dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
+
+  # For packages that have different behavior for different GHC versions
+  switchGHC = arg: arg."${compiler}" or arg.otherwise;
+
+  # Jailbreak a package for a specific version of GHC
+  jailbreakOnGHC = ver: pkg: switchGHC {
+    "${ver}"  = wrappers.jailbreak pkg;
+    otherwise = pkg;
+  };
 
   # Wrappers
   disableOptimization = pkg: hlib.appendConfigureFlag pkg "--disable-optimization"; # In newer nixpkgs
@@ -49,18 +59,15 @@ let
          (wrapper
           (haskellPackagesNew.callCabal2nix name src { }));
 
-  abc       = pkgsOld.callPackage ./abc.nix { };
-  mkpkg     = import ./mkpkg.nix;
-  dontCheck = pkg: pkg.overrideDerivation (_: { doCheck = false; });
-
-  # For packages that have different behavior for different GHC versions
-  switchGHC      = arg: arg."${compiler}" or arg.otherwise;
-
-  # Jailbreak a package for a specific version of GHC
-  jailbreakOnGHC = ver: pkg: switchGHC {
-    "${ver}"  = wrappers.jailbreak pkg;
-    otherwise = pkg;
-  };
+  # ABC has a tricky build...
+  abc    = pkgsOld.callPackage ./abc.nix { };
+  addABC = drv: drv.overrideDerivation (oldAttrs: {
+      buildPhase = ''
+        export NIX_LDFLAGS+=" -L${abc} -L${abc}/lib"
+        ${oldAttrs.buildPhase}
+      '';
+      librarySystemDepends = [ abc ];
+  });
 
   withSubdirs = pname: json: f: suffix: mk {
     inherit json;
@@ -70,7 +77,6 @@ let
   };
 
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
-
 
   crucibleSrc = ./json/crucible.json;
   crucibleF = withSubdirs "crucible" crucibleSrc
@@ -114,6 +120,7 @@ in {
   parameterized-utils = mk {
     name = "parameterized-utils";
     json = ./json/parameterized-utils.json;
+    # TODO: why is this not default?
     wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
   };
 
@@ -156,28 +163,19 @@ in {
   crucible-llvm   = switchGHC {
     "ghc843"  = haskellPackagesNew.callPackage ./ghc843/crucible-llvm.nix { };
     otherwise = (crucibleF "llvm");
-    # otherwise = (crucibleF "llvm").overrideAttrs (oldAttrs: {
-    #   postUnpack = "sourceRoot+=/crucible-llvm; echo source root reset to $sourceRoot";
-    # });
   };
 
   what4     = what4 "";
   what4-sbv = what4 "sbv";
-  what4-abc = (what4 "abc").overrideDerivation (oldAttrs: {
-      buildPhase = ''
-        export NIX_LDFLAGS+=" -L${abc} -L${abc}/lib"
-        ${oldAttrs.buildPhase}
-      '';
-      librarySystemDepends = [ abc ];
-  });
+  what4-abc = addABC (what4 "abc");
 
   # Cryptol needs base-compat < 0.10, version is 0.10.4
   cryptol = wrappers.jailbreakDefault haskellPackagesOld.cryptol;
 
-  cryptol-verifier = mk {
+  cryptol-verifier = addABC (mk {
     name = "cryptol-verifier";
     json = ./json/cryptol-verifier.json;
-  };
+  });
 
   elf-edit = mk {
     name = "elf-edit";
@@ -219,10 +217,10 @@ in {
     json = ./json/llvm-pretty-bc-parser.json;
   };
 
-  llvm-verifier = mk {
+  llvm-verifier = addABC (mk {
     name = "llvm-verifier";
     json = ./json/llvm-verifier.json;
-  };
+  });
 
   llvm-pretty = mk {
     name = "llvm-pretty";
@@ -321,6 +319,9 @@ in {
   # });
 
   # haskell-code-explorer
-  cabal-helper    = wrappers.jailbreak haskellPackagesOld.cabal-helper;
+  cabal-helper    =
+    (wrappers.jailbreak haskellPackagesOld.cabal-helper).overrideAttrs (oldAttrs: {
+    src = "${haskellPackagesNew.haskell-code-explorer.src}/vendor/cabal-helper-0.8.1.2";
+  });
   haddock-library = wrappers.jailbreak haskellPackagesOld.haddock-library;
 }

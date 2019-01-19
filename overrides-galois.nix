@@ -70,7 +70,8 @@ let
 
   withSubdirs = pname: json: f: suffix: mk {
     inherit json;
-    name   = pname + maybeSuffix suffix;
+    # name   = pname + maybeSuffix suffix; # TODO: use this
+    name   = pname + "-" + suffix;
     repo   = pname;
     subdir = f suffix;
   };
@@ -171,16 +172,13 @@ in {
   };
 
   # crucible-server = crucibleF "server";
-  crucible        = crucibleF "";
-  crucible-c      = crucibleF "c";
-  crucible-jvm    = crucibleF "jvm";
-  crucible-saw    = crucibleF "saw";
   # crucible-syntax = crucibleF "syntax";
-  crux            = useCrucible "crux";
-  crucible-llvm   = switchGHC {
-    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/crucible-llvm.nix { };
-    otherwise = (crucibleF "llvm");
-  };
+  crucible      = crucibleF "";
+  crucible-c    = crucibleF "c";
+  crucible-jvm  = crucibleF "jvm";
+  crucible-llvm = crucibleF "llvm";
+  crucible-saw  = crucibleF "saw";
+  crux          = useCrucible "crux";
 
   galois-dwarf = mk {
     name = "dwarf";
@@ -217,14 +215,8 @@ in {
 
   macaw-base         = macaw "base";
   macaw-x86          = macaw "x86";
-  macaw-symbolic     = switchGHC {
-    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/macaw-symbolic.nix { };
-    otherwise = macaw "symbolic";
-  };
-  macaw-x86-symbolic = switchGHC {
-    "ghc843"  = haskellPackagesNew.callPackage ./ghc843/macaw-x86-symbolic.nix { };
-    otherwise = macaw "x86_symbolic";
-  };
+  macaw-symbolic     = macaw "symbolic";
+  macaw-x86-symbolic = macaw "x86_symbolic";
 
   what4     = what4 "";
   what4-sbv = what4 "sbv";

@@ -35,6 +35,8 @@ in {
   llvm-pretty = alterSrc haskellPackagesOld.llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
   llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
   crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible/crucible-llvm);
+  macaw-symbolic  = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
+  saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
 
   # macaw-symbolic =
   #   alterSrcJSON haskellPackagesOld.macaw-symbolic "macaw" ./json/macaw.json;

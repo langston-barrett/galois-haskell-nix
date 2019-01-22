@@ -68,8 +68,7 @@ build:
 	./scripts/build-all.sh $(PKGS)
 
 .PHONY: status
-status:
-	./scripts/status.sh $(PKGS)
+status: ./scripts/status.sh $(PKGS)
 
 .PHONY: local
 local:
@@ -85,6 +84,12 @@ local:
 
 %.json.saw:
 	@bash scripts/saw-dep.sh "$(basename $(basename $@))"
+
+haskellPackages.%:
+	@nix-build --max-jobs auto -A "$@" |& tee log
+
+haskellPackages.%.local:
+	@nix-build --max-jobs auto -A "$(basename $@)" local.nix |& tee log
 
 .PHONY: clean
 clean:

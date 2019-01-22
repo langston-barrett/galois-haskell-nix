@@ -54,7 +54,7 @@ let
           inherit (fromJson) rev sha256;
         }) + "/" + subdir) [".hs" "LICENSE" "cabal" ".c"];
 
-    in builtins.trace ("Building: " + name)
+    in builtins.trace ("mk: " + name)
          (wrapper
           (haskellPackagesNew.callCabal2nix name src { }));
 

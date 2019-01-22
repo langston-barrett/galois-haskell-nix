@@ -8,42 +8,80 @@
 # Be sure to use ~nix-shell --pure~!
 { pkgs  ? import ./pinned-pkgs.nix { }
 , gpkgs ? import ./default.nix { }
-, name  ? "crucible-llvm"
+, names ? [
+  "crucible"
+  "crucible-llvm"
+  "llvm-pretty"
+  "llvm-pretty-bc-parser"
+  "parameterized-utils"
+  "what4"
+]
 }:
 
 let
-  this  = gpkgs.haskellPackages.${name};
+  these = map (name: gpkgs.haskellPackages.${name}) names;
+  each  = f: map f these;
   ghcWP = gpkgs.haskellPackages.ghcWithPackages (hpkgs: with hpkgs; [
     # Cabal_2_2_0_1 # doesn't help?
-  ] ++ this.buildInputs ++ this.propagatedBuildInputs);
+  ] ++ pkgs.lib.concatLists (each (this: this.buildInputs))
+    ++ pkgs.lib.concatLists (each (this: this.propagatedBuildInputs)));
   ghcPkgConf = ghcWP + "/lib/ghc-8.4.3/package.conf.d";
 in with pkgs; stdenv.mkDerivation {
-  name         = "${name}-code-exporer";
+  name         = "galois-code-exporer";
+  src          = null;
   buildInputs  = [
     ghcWP
     haskellPackages.cabal-install
     gpkgs.haskellPackages.haskell-code-explorer
   ];
-  src          = if lib.inNixShell then null else this.src;
-  shellHook    = ''
+  shellHook    =
+    let root = "/run/user/1000/code-explorer/";
+    in ''
     # Save space and time be reusing the home directory
-    root=/run/user/1000/code-explorer && mkdir -p "$root" && cd "$root"
-    home=$root/home                   && mkdir -p "$home"
-    dir=$root/${name}                 && mkdir -p "$dir"  && cd "$dir"
+    root=${root}      && mkdir -p "$root" && cd "$root"
+    home=$root/home   && mkdir -p "$home"
     export HOME=$home
 
-    # Build and index the package
-    cp -a ${this.src}/* "$dir"
-    cabal update && cabal configure && cabal build
-    haskell-code-indexer -p "$(pwd)" \
-                         --dist dist/ \
-                         --ghc "-package-db ${ghcPkgConf}"
+    for path in ${lib.concatStringsSep " " (each (this: this.src))}; do
+      cabal=$(basename $(ls $path/*.cabal))
+      name=''${cabal%.*}
+      echo "Copying source of $name to $root$name"
+      cp -a "$path" "$root/$name" &> /dev/null
+      chmod 0750 "$root/$name"
+    done
+
+    cabal update
+
+    declare -a flags
+    for path in ${lib.concatStringsSep " " these}; do
+      # We do some weird bash parameter substitution to find the name from the
+      # path. The double quote escapes the $ { }
+      name0=''${path%-*}
+      name=''${name0#*-}
+
+      echo "Building $name..."
+
+      # Build the package
+      dir=$root/$name && mkdir -p "$dir" && cd "$dir"
+      if ! [[ -d $(pwd)/dist ]]; then
+        cabal configure && cabal build
+      fi
+
+      # Index the package
+      if ! [[ -d $(pwd)/.haskell-code-explorer ]]; then
+        if haskell-code-indexer -p "$(pwd)" \
+                                --dist dist/ \
+                                --ghc "-package-db ${ghcPkgConf}"; then
+          flags+=( "--package $name" )
+        fi
+      else
+        flags+=( "--package $name" )
+      fi
+    done
 
     # Run the server
-    haskell-code-server --package "$(pwd)"
+    cd $root
+    pkill haskell-code-se
+    haskell-code-server ''${flags[*]}
   '';
-  # installPhase = ''
-  #   mkdir -p "$out"
-  #   cp -a ./.haskell-code-explorer "$out"
-  # '';
 }

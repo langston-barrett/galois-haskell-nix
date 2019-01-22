@@ -34,12 +34,10 @@ in with pkgs; stdenv.mkDerivation {
     haskellPackages.cabal-install
     gpkgs.haskellPackages.haskell-code-explorer
   ];
-  shellHook    =
-    let root = "/run/user/1000/code-explorer/";
-    in ''
+  shellHook    = ''
     # Save space and time be reusing the home directory
-    root=${root}      && mkdir -p "$root" && cd "$root"
-    home=$root/home   && mkdir -p "$home"
+    root="/run/user/$(id -u)/code-explorer/" && mkdir -p "$root" && cd "$root"
+    home=$root/home                          && mkdir -p "$home"
     export HOME=$home
 
     for path in ${lib.concatStringsSep " " (each (this: this.src))}; do

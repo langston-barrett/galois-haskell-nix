@@ -14,6 +14,7 @@
   "llvm-pretty"
   "llvm-pretty-bc-parser"
   "parameterized-utils"
+  "saw-script"
   "what4"
 ]
 }:
@@ -27,7 +28,7 @@ let
     ++ pkgs.lib.concatLists (each (this: this.propagatedBuildInputs)));
   ghcPkgConf = ghcWP + "/lib/ghc-8.4.3/package.conf.d";
 in with pkgs; stdenv.mkDerivation {
-  name         = "galois-code-exporer";
+  name         = "galois-code-explorer";
   src          = null;
   buildInputs  = [
     ghcWP

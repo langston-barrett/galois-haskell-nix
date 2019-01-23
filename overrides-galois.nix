@@ -95,7 +95,7 @@ let
     let name = "what4" + maybeSuffix suffix;
     in useCrucible name;
 
-  macaw = withSubdirs "macaw" ./json/macaw.json (suffix: suffix);
+  macaw = withSubdirs "macaw" ./json/saw/macaw.json (suffix: suffix);
 
 in {
 
@@ -284,7 +284,7 @@ in {
   unordered-containers = jailbreakOnGHC "ghc861" haskellPackagesOld.unordered-containers;
 
 #################################################################
-# ** Tools
+# ** haskell-code-explorer
 
   # Status: not ready for GHC 8.6
 
@@ -307,4 +307,64 @@ in {
     src = "${haskellPackagesNew.haskell-code-explorer.src}/vendor/cabal-helper-0.8.1.2";
   });
   haddock-library = wrappers.jailbreak haskellPackagesOld.haddock-library;
+
+#################################################################
+# ** haskell-ide-engine
+
+
+  # nix-shell --pure -p nix-prefetch-git --run 'nix-prefetch-git https://github.com/haskell/haskell-ide-engine 0.5.0.0 > ./json/tools/hie.json'
+  hie = mk {
+    name  = "haskell-ide-engine";
+    owner = "haskell";
+    json  = ./json/tools/hie.json;
+  };
+
+  hie-plugin-api = mk {
+    name    = "haskell-ide-engine";
+    owner   = "haskell";
+    json    = ./json/tools/hie.json;
+    subdir  = "hie-plugin-api";
+  };
+
+  # For hie-plugin-api
+  constrained-dynamic = wrappers.default haskellPackagesOld.constrained-dynamic;
+
+  # hie/submodules: 53979f0
+  HaRe = mk {
+    name    = "HaRe";
+    owner   = "alanz";
+    json    = ./json/tools/hare.json;
+    wrapper = x: hlib.dontHaddock (wrappers.jailbreakDefault x);
+  };
+
+  haskell-lsp = mk {
+    name    = "haskell-lsp";
+    owner   = "alanz";
+    json    = ./json/tools/haskell-lsp.json;
+    # wrapper = wrappers.jailbreakDefault;
+  };
+
+  haskell-lsp-types = mk {
+    name    = "haskell-lsp";
+    owner   = "alanz";
+    json    = ./json/tools/haskell-lsp.json;
+    subdir  = "haskell-lsp-types";
+    # wrapper = wrappers.jailbreakDefault;
+  };
+
+  # Commit 3ccd528, See https://github.com/DanielG/ghc-mod/pull/937
+  ghc-mod = mk {
+    name    = "ghc-mod";
+    owner   = "alanz";
+    json    = ./json/tools/ghc-mod.json;
+    wrapper = wrappers.jailbreakDefault;
+  };
+
+  ghc-mod-core = mk {
+    name    = "ghc-mod";
+    owner   = "alanz";
+    json    = ./json/tools/ghc-mod.json;
+    subdir  = "core";
+    wrapper = wrappers.jailbreakDefault;
+  };
 }

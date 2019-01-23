@@ -1,0 +1,7 @@
+{
+  "url": "https://github.com/haskell/haskell-ide-engine",
+  "rev": "c4a9e7cfce86194493834839271c2aa390483048",
+  "date": "2019-01-16T00:01:02+00:00",
+  "sha256": "1w5fwmlscwkrsvyh51nhcpzbirnsnpah2n7c7r60yy9j9x553kzr",
+  "fetchSubmodules": true
+}

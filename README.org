@@ -55,6 +55,8 @@ use these builds, import this package set in your Nix file and access its
       miracle of Nix, the builds will succeed in CI iff they succeed locally (modulo
       timeouts, which are very frequent).
 
+    - =json= will update all the pinned dependency versions
+
     - =%.json.master= will update the pinned version of a dependency. For
       example, the following would update the version of Macaw::
 

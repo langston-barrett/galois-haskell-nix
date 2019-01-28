@@ -69,6 +69,8 @@ use these builds, import this package set in your Nix file and access its
 
     - =clean= removes the symlinks that Nix makes when building.
 
+    - =status= updates [[*Status][the status section below]]
+
 ** TODO TODO
 
   - See what manually-edited Nix files can be removed

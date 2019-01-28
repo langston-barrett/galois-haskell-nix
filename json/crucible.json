@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/GaloisInc/crucible",
-  "rev": "e1562c7ef68b66c027e9f6aeec532ef05b929ebc",
-  "date": "2019-01-14T12:10:38-08:00",
-  "sha256": "1kns01bl0mmx39c1zra7mjxg7dbr5qskpavihd6qiqz6z1qcsqqq",
-  "fetchSubmodules": true
+  "rev": "b4a074acc92d082c1b2533df10ab485b73b31c42",
+  "date": "2019-01-28T09:35:43-08:00",
+  "sha256": "1av12x0xkp4nddjk01rjlmq8jwf182fqkmpc7fr3mdfgd3q7bl4b",
+  "fetchSubmodules": false
 }

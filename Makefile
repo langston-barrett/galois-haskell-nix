@@ -68,11 +68,16 @@ build:
 	./scripts/build-all.sh $(PKGS)
 
 .PHONY: status
-status: ./scripts/status.sh $(PKGS)
+status:
+	./scripts/status.sh $(PKGS)
 
 .PHONY: local
 local:
 	LOCAL=1 ./scripts/build-all.sh $(PKGS)
+
+.PHONY: json
+json:
+	./scripts/json.sh $(JSON)
 
 %.json.master:
 	@if [[ $(basename $(basename $@)) == "llvm-pretty" ]]; then \

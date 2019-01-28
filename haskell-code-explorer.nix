@@ -14,7 +14,7 @@
   "llvm-pretty"
   "llvm-pretty-bc-parser"
   "parameterized-utils"
-  "saw-script"
+  # "saw-script"
   "what4"
 ]
 }:

@@ -3,5 +3,5 @@
   "rev": "0451046cab7cc00adcc0fbacc0e1969b37e23e61",
   "date": "2019-01-22T16:26:38-05:00",
   "sha256": "0m33gqgk5szwdpdc7km13sfmb7kdi9bg7l7ai659xgd5bzjigq5j",
-  "fetchSubmodules": true
+  "fetchSubmodules": false
 }

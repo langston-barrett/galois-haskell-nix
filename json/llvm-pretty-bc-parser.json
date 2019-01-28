@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/GaloisInc/llvm-pretty-bc-parser",
-  "rev": "181713af59587ae61b4f4625407cc5e795b8c70b",
-  "date": "2019-01-10T16:35:03-08:00",
-  "sha256": "1whd8fgihn9rrfcl1fpg5rxy6a8lm897hddisgwymldzg5x3a36x",
-  "fetchSubmodules": true
+  "rev": "cf034b50812046be637920ca944b78b2fcb25a9a",
+  "date": "2019-01-17T16:26:03-08:00",
+  "sha256": "1b6xsw701id8sg8saa9chkv1p11viy338nazhs48mx1b88ag6nq8",
+  "fetchSubmodules": false
 }

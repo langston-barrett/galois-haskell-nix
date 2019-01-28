@@ -30,14 +30,16 @@ let
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
 in {
-  # crucible       = alterSrc haskellPackagesOld.crucible (../crucible);
 
-  llvm-pretty = alterSrc haskellPackagesOld.llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
-  llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
+  # llvm-pretty = alterSrc haskellPackagesOld.llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
+  # llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
+
+  crucible       = alterSrc haskellPackagesOld.crucible (../crucible/crucible);
   crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible/crucible-llvm);
-  macaw-symbolic  = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
-  saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
+  saw-script     = alterSrc haskellPackagesOld.saw-script (../saw-script);
+  what4          = alterSrc haskellPackagesOld.what4 (../crucible/what4);
 
+  # macaw-symbolic  = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
   # macaw-symbolic =
   #   alterSrcJSON haskellPackagesOld.macaw-symbolic "macaw" ./json/macaw.json;
   # saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);

@@ -2,6 +2,7 @@ PKGS ?= \
   abcBridge \
   aig \
   binary-symbols \
+  crackNum \
   cryptol \
   crucible \
   crucible-c \
@@ -24,6 +25,7 @@ PKGS ?= \
   macaw-x86 \
   macaw-x86-symbolic \
   parameterized-utils \
+  sbv \
   saw-script \
   saw-core \
   saw-core-aig \
@@ -40,6 +42,7 @@ PKGS ?= \
 #
 # TODO: This is unused. Should make update-all target.
 JSON ?= \
+  crackNum \
   crucible \
   cryptol \
   cryptol-verifier \
@@ -53,6 +56,7 @@ JSON ?= \
   llvm-verifier \
   macaw \
   parameterized-utils \
+  sbv \
   saw-core \
   saw-core-aig \
   saw-core-sbv \
@@ -80,10 +84,13 @@ json:
 	./scripts/json.sh $(JSON)
 
 %.json.master:
-	@if [[ $(basename $(basename $@)) == "llvm-pretty" ]]; then \
-		nix-prefetch-git "ssh://git@github.com/elliottt/$(basename $(basename $@))" > "$(basename $@)"; \
+	$(eval BN := $(basename $(basename $@)))
+	@if [[ $(BN) == "llvm-pretty" ]]; then \
+		nix-prefetch-git "ssh://git@github.com/elliottt/$(BN)" > "$(basename $@)"; \
+	elif [[ $(BN) == "sbv" || $(BN) == "crackNum" ]]; then \
+		nix-prefetch-git "ssh://git@github.com/LeventErkok/$(BN)" > "$(basename $@)"; \
 	else \
-		nix-prefetch-git "ssh://git@github.com/GaloisInc/$(basename $(basename $@))" > "$(basename $@)"; \
+		nix-prefetch-git "ssh://git@github.com/GaloisInc/$(BN)" > "$(basename $@)"; \
 	fi
 	mv "$(basename $@)" json/
 

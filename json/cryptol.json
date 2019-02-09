@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/GaloisInc/cryptol",
-  "rev": "d38eab4b2c1c6dcd13795c67a8c27c2bbe1b48df",
-  "date": "2019-01-25T10:20:40-08:00",
-  "sha256": "17rf1dlkkpj5nnpbhfxi6chl8cxgznxkdjln9kl328sp4qb4p5yz",
+  "rev": "b1edb9e36e182a8f2b29d6b6a98d11bf481ff63d",
+  "date": "2019-02-08T09:56:37-08:00",
+  "sha256": "0yw9z2ahrabrlmf372j9qcakg2f4w5fx05ic8hjxsk9gkml0bc8v",
   "fetchSubmodules": false
 }

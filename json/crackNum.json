@@ -1,0 +1,7 @@
+{
+  "url": "ssh://git@github.com/LeventErkok/crackNum",
+  "rev": "54cf70861a921062db762b3c50e933e73446c3b2",
+  "date": "2018-11-16T20:06:05-08:00",
+  "sha256": "02cg64rq8xk7x53ziidljyv3gsshdpgbzy7h03r869gj02l7bxwa",
+  "fetchSubmodules": false
+}

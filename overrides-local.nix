@@ -34,12 +34,18 @@ in {
   # llvm-pretty = alterSrc haskellPackagesOld.llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
   # llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
 
-  crucible       = alterSrc haskellPackagesOld.crucible (../crucible/crucible);
-  crucible-llvm  = alterSrc haskellPackagesOld.crucible-llvm (../crucible/crucible-llvm);
+  # crucible      = alterSrc haskellPackagesOld.crucible (../crucible/crucible);
+  # crucible-llvm = alterSrc haskellPackagesOld.crucible-llvm (../crucible/crucible-llvm);
+  # crucible-jvm = alterSrc haskellPackagesOld.crucible-jvm (../crucible/crucible-jvm);
   saw-script     = alterSrc haskellPackagesOld.saw-script (../saw-script);
-  what4          = alterSrc haskellPackagesOld.what4 (../crucible/what4);
+  # what4          = haskellPackagesOld.what4.overrideAttrs (oldAttrs: {
+  #   src = srcFilter (../crucible/what4);
+  #   propagatedBuildInputs =
+  #     oldAttrs.propagatedBuildInputs ++ [ haskellPackagesOld.deriving-compat ];
+  # });
 
-  # macaw-symbolic  = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
+  # parameterized-utils = alterSrc haskellPackagesOld.parameterized-utils (../parameterized-utils);
+
   # macaw-symbolic =
   #   alterSrcJSON haskellPackagesOld.macaw-symbolic "macaw" ./json/macaw.json;
   # saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
@@ -48,17 +54,14 @@ in {
   # llvm-verifier = alterSrc haskellPackagesOld.llvm-verifier (../llvm-verifier);
 
   # Trying crucible-syntax (needs newer megaparsec than in nixpkgs)
-  # what4 = alterSrc haskellPackagesOld.what4 (../crucible/what4);
-  # crucible = haskellPackagesNew.callCabal2nix "crucible" ../crucible/crucible { };
   # crucible-syntax  = alterSrc haskellPackagesOld.crucible-syntax (../crucible/crucible-syntax);
+}
+//
 
-
-  # crucible-llvm  =
-  #   haskellPackagesOld.crucible-llvm.overrideDerivation
-  #     (oldAttrs: {
-  #       src = pkgs_old.lib.sourceFilesBySuffices
-  #               ../crucible/crucible-llvm [".hs" "LICENSE" "cabal" ".c"];
-  #       postUnpack = null;
-  #       doCheck    = false;
-  #     });
+# The Macaw suite
+{
+  macaw-base         = alterSrc haskellPackagesOld.macaw-base (../macaw/base);
+  macaw-symbolic     = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
+  macaw-x86-symbolic = alterSrc haskellPackagesOld.macaw-x86-symbolic (../macaw/x86_symbolic);
+  macaw-x86          = alterSrc haskellPackagesOld.macaw-x86 (../macaw/x86);
 }

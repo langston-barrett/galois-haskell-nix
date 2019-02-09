@@ -78,7 +78,7 @@ let
 
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
-  crucibleSrc = ./json/crucible.json;
+  crucibleSrc = ./json/saw/crucible.json;
   crucibleF = withSubdirs "crucible" crucibleSrc
                 (suffix: "crucible" + maybeSuffix suffix);
 
@@ -118,8 +118,10 @@ in {
     json   = ./json/flexdis86.json;
   };
 
-  # Cryptol needs base-compat < 0.10, version is 0.10.4
-  cryptol = wrappers.jailbreakDefault haskellPackagesOld.cryptol;
+  cryptol = mk {
+    name   = "cryptol";
+    json   = ./json/cryptol.json;
+  };
 
   cryptol-verifier = addABC (mk {
     name = "cryptol-verifier";
@@ -139,7 +141,7 @@ in {
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = mk {
     name = "parameterized-utils";
-    json = ./json/parameterized-utils.json;
+    json = ./json/saw/parameterized-utils.json;
     # TODO: why is this not default?
     wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
   };
@@ -223,7 +225,41 @@ in {
   what4-abc = addABC (what4 "abc");
 
 #################################################################
+# ** Haddock
+
+  # https://github.com/haskell/haddock/issues/43
+
+  # haddock-api = mk {
+  #   name = "haddock";
+  #   owner = "haskell";
+  #   json = ./json/tools/haddock.json;
+  #   subdir = "haddock-api";
+  #   wrapper = wrappers.jailbreakDefault;
+  # };
+
+  # haddock = mk {
+  #   name = "haddock";
+  #   owner = "haskell";
+  #   json = ./json/tools/haddock.json;
+  #   wrapper = wrappers.jailbreakDefault;
+  # };
+
+#################################################################
 # ** Hackage dependencies
+
+  # Needed for SBV 8
+  crackNum = mk {
+    name = "crackNum";
+    owner = "LeventErkok";
+    json = ./json/crackNum.json;
+  };
+
+  # Need SBV 8
+  sbv = mk {
+    name = "sbv";
+    owner = "LeventErkok";
+    json = ./json/sbv.json;
+  };
 
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
   hpack     = switchGHC {

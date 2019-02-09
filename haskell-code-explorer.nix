@@ -9,13 +9,13 @@
 { pkgs  ? import ./pinned-pkgs.nix { }
 , gpkgs ? import ./default.nix { }
 , names ? [
-  "crucible"
-  "crucible-llvm"
-  "llvm-pretty"
-  "llvm-pretty-bc-parser"
+  # "crucible"
+  # "crucible-llvm"
+  # "llvm-pretty"
+  # "llvm-pretty-bc-parser"
   "parameterized-utils"
   # "saw-script"
-  "what4"
+  # "what4"
 ]
 }:
 

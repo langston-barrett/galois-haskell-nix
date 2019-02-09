@@ -11,6 +11,8 @@ for pkg in ${args[*]}; do
   owner="GaloisInc"
   if [[ $pkg == "llvm-pretty" ]]; then
     owner="elliottt"
+  elif [[ $pkg == "sbv" || $pkg == "crackNum" ]]; then
+    owner="LeventErkok"
   fi
 
   url="ssh://git@github.com/$owner/$pkg"

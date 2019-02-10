@@ -154,23 +154,23 @@ in {
 
   saw-core = mk {
     name = "saw-core";
-    json = ./json/saw-core.json;
+    json = ./json/saw/saw-core.json;
   };
 
   saw-core-aig = mk {
     name = "saw-core-aig";
-    json = ./json/saw-core-aig.json;
+    json = ./json/saw/saw-core-aig.json;
   };
 
   # This one takes a long time to build
   saw-core-sbv = mk {
     name = "saw-core-sbv";
-    json = ./json/saw-core-sbv.json;
+    json = ./json/saw/saw-core-sbv.json;
   };
 
   saw-core-what4 = mk {
     name = "saw-core-what4";
-    json = ./json/saw-core-what4.json;
+    json = ./json/saw/saw-core-what4.json;
   };
 
   # crucible-server = crucibleF "server";

@@ -15,6 +15,7 @@ PKGS ?= \
   elf-edit \
   flexdis86 \
   galois-dwarf \
+  itanium-abi \
   jvm-parser \
   jvm-verifier \
   llvm-pretty \
@@ -49,6 +50,7 @@ JSON ?= \
   dwarf \
   elf-edit \
   flexdis86 \
+  itanium-abi \
   jvm-parser \
   jvm-verifier \
   llvm-pretty \
@@ -89,6 +91,8 @@ json:
 		nix-prefetch-git "ssh://git@github.com/elliottt/$(BN)" > "$(basename $@)"; \
 	elif [[ $(BN) == "sbv" || $(BN) == "crackNum" ]]; then \
 		nix-prefetch-git "ssh://git@github.com/LeventErkok/$(BN)" > "$(basename $@)"; \
+	elif [[ $(BN) == "itanium-abi" ]]; then \
+		nix-prefetch-git "ssh://git@github.com/travitch/$(BN)" > "$(basename $@)"; \
 	else \
 		nix-prefetch-git "ssh://git@github.com/GaloisInc/$(BN)" > "$(basename $@)"; \
 	fi

@@ -1,5 +1,8 @@
+# * Local overrides
+#
 # Overrides for using local versions of sources.
 # Good for hacking on multiple parts of the package set.
+#
 { pkgsOld  ? import ./pinned-pkgs.nix { }
 , compiler # ? "ghc844"
 }:
@@ -13,6 +16,12 @@ let
   # Give an explicit path for a new source
   alterSrc = pkg: path: pkg.overrideDerivation (_: {
     src = srcFilter path;
+  });
+
+  # Add dependencies
+  addDeps = pkg: path: deps: pkg.overrideAttrs (oldAttrs: {
+    src = srcFilter path;
+    propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ deps;
   });
 
   # Change the JSON file used for the source fetching
@@ -29,39 +38,41 @@ let
 
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
-in {
-
-  # llvm-pretty = alterSrc haskellPackagesOld.llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
-  # llvm-pretty-bc-parser = alterSrc haskellPackagesOld.llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
-
-  # crucible      = alterSrc haskellPackagesOld.crucible (../crucible/crucible);
-  # crucible-llvm = alterSrc haskellPackagesOld.crucible-llvm (../crucible/crucible-llvm);
-  # crucible-jvm = alterSrc haskellPackagesOld.crucible-jvm (../crucible/crucible-jvm);
-  saw-script     = alterSrc haskellPackagesOld.saw-script (../saw-script);
-  # what4          = haskellPackagesOld.what4.overrideAttrs (oldAttrs: {
-  #   src = srcFilter (../crucible/what4);
-  #   propagatedBuildInputs =
-  #     oldAttrs.propagatedBuildInputs ++ [ haskellPackagesOld.deriving-compat ];
-  # });
-
-  # parameterized-utils = alterSrc haskellPackagesOld.parameterized-utils (../parameterized-utils);
-
-  # macaw-symbolic =
-  #   alterSrcJSON haskellPackagesOld.macaw-symbolic "macaw" ./json/macaw.json;
-  # saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
-  # saw-core = alterSrc haskellPackagesOld.saw-core (../saw-core);
-  # saw-script = alterSrc haskellPackagesOld.saw-script (../saw-script);
-  # llvm-verifier = alterSrc haskellPackagesOld.llvm-verifier (../llvm-verifier);
-
-  # Trying crucible-syntax (needs newer megaparsec than in nixpkgs)
-  # crucible-syntax  = alterSrc haskellPackagesOld.crucible-syntax (../crucible/crucible-syntax);
+in with haskellPackagesOld; {
+  # Use with auto-yasnippet (SPC i S c)
+  # ~pkg = alterSrc ~pkg (../crucible/~pkg);
+  saw-script     = alterSrc saw-script (../saw-script);
 }
 //
 
-# The Macaw suite
-{
-  macaw-base         = alterSrc haskellPackagesOld.macaw-base (../macaw/base);
-  macaw-symbolic     = alterSrc haskellPackagesOld.macaw-symbolic (../macaw/symbolic);
-  macaw-x86-symbolic = alterSrc haskellPackagesOld.macaw-x86-symbolic (../macaw/x86_symbolic);
-  macaw-x86          = alterSrc haskellPackagesOld.macaw-x86 (../macaw/x86);
-}
+# ** Macaw
+
+(with haskellPackagesOld; {
+  # macaw-base         = alterSrc macaw-base (../macaw/base);
+  # macaw-symbolic     = alterSrc macaw-symbolic (../macaw/symbolic);
+  # macaw-x86-symbolic = alterSrc macaw-x86-symbolic (../macaw/x86_symbolic);
+  # macaw-x86          = alterSrc macaw-x86 (../macaw/x86);
+})
+//
+
+# ** Crucible
+
+(with haskellPackagesOld; {
+  # crucible            = alterSrc crucible (../crucible/crucible);
+  # crucible-llvm       = alterSrc crucible-llvm (../crucible/crucible-llvm);
+  crucible-llvm       = addDeps crucible-llvm (../crucible/crucible-llvm) [itanium-abi];
+  # crucible-jvm        = alterSrc crucible-jvm (../crucible/crucible-jvm);
+  # crucible-saw        = alterSrc crucible-saw (../crucible/crucible-saw);
+  # parameterized-utils = alterSrc parameterized-utils (../parameterized-utils);
+  # what4               = addDeps what4 (../crucible/what4) [deriving-compat];
+  # what4               = alterSrc what4 (../crucible/what4);
+  crux-llvm           = alterSrc crux-llvm (../crucible/crux-llvm);
+})
+//
+
+# ** llvm-pretty-*
+
+(with haskellPackagesOld; {
+  # llvm-pretty = alterSrc llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
+  # llvm-pretty-bc-parser = alterSrc llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
+})

@@ -1,6 +1,7 @@
 # Overrides to the default Haskell package set for most Galois packages
 { pkgsOld  ? import ./pinned-pkgs.nix { }
 , compiler # ? "ghc843"
+, buildType ? "master"
 }:
 
 haskellPackagesNew: haskellPackagesOld:
@@ -10,6 +11,9 @@ haskellPackagesNew: haskellPackagesOld:
 
 let
   hlib = pkgsOld.haskell.lib;
+
+  # Find the appropriate JSON source spec
+  sources = import ./sources.nix { inherit buildType; };
 
   # For packages that have different behavior for different GHC versions
   switchGHC = arg: arg."${compiler}" or arg.otherwise;
@@ -68,8 +72,8 @@ let
       librarySystemDepends = [ abc ];
   });
 
-  withSubdirs = pname: json: f: suffix: mk {
-    inherit json;
+  withSubdirs = pname: f: suffix: mk {
+    json   = sources.${pname};
     # name   = pname + maybeSuffix suffix; # TODO: use this
     name   = pname + "-" + suffix;
     repo   = pname;
@@ -78,14 +82,13 @@ let
 
   maybeSuffix = suffix: if suffix == "" then "" else "-" + suffix;
 
-  crucibleSrc = ./json/saw/crucible.json;
-  crucibleF = withSubdirs "crucible" crucibleSrc
+  crucibleF = withSubdirs "crucible"
                 (suffix: "crucible" + maybeSuffix suffix);
 
   # A package in a subdirectory of Crucible
   useCrucible = name: mk {
     inherit name;
-    json   = crucibleSrc;
+    json   = ./json/crucible.json;
     repo   = "crucible";
     subdir = name;
   };
@@ -95,7 +98,7 @@ let
     let name = "what4" + maybeSuffix suffix;
     in useCrucible name;
 
-  macaw = withSubdirs "macaw" ./json/saw/macaw.json (suffix: suffix);
+  macaw = withSubdirs "macaw" (suffix: suffix);
 
 in {
 
@@ -141,7 +144,7 @@ in {
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = mk {
     name = "parameterized-utils";
-    json = ./json/saw/parameterized-utils.json;
+    json = ./json/parameterized-utils.json;
     # TODO: why is this not default?
     wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
   };
@@ -154,33 +157,33 @@ in {
 
   saw-core = mk {
     name = "saw-core";
-    json = ./json/saw/saw-core.json;
+    json = sources.saw-core;
   };
 
   saw-core-aig = mk {
     name = "saw-core-aig";
-    json = ./json/saw/saw-core-aig.json;
+    json = sources.saw-core-aig;
   };
 
   # This one takes a long time to build
   saw-core-sbv = mk {
     name = "saw-core-sbv";
-    json = ./json/saw/saw-core-sbv.json;
+    json = sources.saw-core-sbv;
   };
 
   saw-core-what4 = mk {
     name = "saw-core-what4";
-    json = ./json/saw/saw-core-what4.json;
+    json = sources.saw-core-what4;
   };
 
   # crucible-server = crucibleF "server";
   # crucible-syntax = crucibleF "syntax";
   crucible      = crucibleF "";
-  crucible-c    = crucibleF "c";
   crucible-jvm  = crucibleF "jvm";
   crucible-llvm = crucibleF "llvm";
   crucible-saw  = crucibleF "saw";
   crux          = useCrucible "crux";
+  crux-llvm     = useCrucible "crux-llvm";
 
   galois-dwarf = mk {
     name = "dwarf";
@@ -246,6 +249,12 @@ in {
 
 #################################################################
 # ** Hackage dependencies
+
+  itanium-abi = mk {
+    name = "itanium-abi";
+    owner = "travitch";
+    json = ./json/itanium-abi.json;
+  };
 
   # Needed for SBV 8
   crackNum = mk {

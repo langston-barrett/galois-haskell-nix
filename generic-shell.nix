@@ -13,6 +13,7 @@ in with pkgs; stdenv.mkDerivation {
     ] ++ this.buildInputs ++ this.propagatedBuildInputs))
 
     haskellPackages.cabal-install
+    haskellPackages.hlint
     # haskellPackages.importify
 
     git

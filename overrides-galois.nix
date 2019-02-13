@@ -1,7 +1,8 @@
 # Overrides to the default Haskell package set for most Galois packages
 { pkgsOld  ? import ./pinned-pkgs.nix { }
 , compiler # ? "ghc843"
-, buildType ? "master"
+, sourceType ? "master" # "master" or "saw"
+, buildType  ? "good"   # "good" (optimized) or "fast" (unoptimized)
 }:
 
 haskellPackagesNew: haskellPackagesOld:
@@ -13,7 +14,7 @@ let
   hlib = pkgsOld.haskell.lib;
 
   # Find the appropriate JSON source spec
-  sources = import ./sources.nix { inherit buildType; };
+  sources = import ./sources.nix { inherit sourceType; };
 
   # For packages that have different behavior for different GHC versions
   switchGHC = arg: arg."${compiler}" or arg.otherwise;
@@ -27,14 +28,16 @@ let
   # Wrappers
   disableOptimization = pkg: hlib.appendConfigureFlag pkg "--disable-optimization"; # In newer nixpkgs
   wrappers = rec {
-    nocov  = x: hlib.dontCoverage x;
-    noprof = x: hlib.disableExecutableProfiling (hlib.disableLibraryProfiling (nocov x));
-    notest = x: hlib.dontCheck (noprof x);
-    fast = x: disableOptimization (notest x);
-    exe = x: hlib.justStaticExecutables (wrappers.default x);
-    jailbreak = x: hlib.doJailbreak x;
+    nocov            = x: hlib.dontCoverage x;
+    noprof           = x: hlib.disableExecutableProfiling (hlib.disableLibraryProfiling (nocov x));
+    notest           = x: hlib.dontCheck (noprof x);
+    exe              = x: hlib.justStaticExecutables (wrappers.default x);
+    jailbreak        = x: hlib.doJailbreak x;
     jailbreakDefault = x: wrappers.jailbreak (wrappers.default x);
-    default = fast;
+    #
+    fast    = x: disableOptimization (notest x);
+    good    = x: hlib.dontCheck (nocov x);
+    default = wrappers.${buildType};
   };
 
   # Main builder function. Reads in a JSON describing the git revision and

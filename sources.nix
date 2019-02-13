@@ -1,12 +1,12 @@
 # * Sources
 #
 # Choose which sources to use. The options are: "master" or "saw"
-{ pkgs      ? import ./pinned-pkgs.nix { }
-, buildType ? "saw"
+{ pkgs       ? import ./pinned-pkgs.nix { }
+, sourceType ? "saw"
 }:
 
 let
-  case = arg: arg."${buildType}" or arg.master;
+  case = arg: arg."${sourceType}" or arg.master;
 in {
   crucible = case {
     saw    = ./json/saw/crucible.json;

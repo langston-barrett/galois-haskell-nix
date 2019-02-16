@@ -1,5 +1,7 @@
 { pkgs ? import ./pinned-pkgs.nix { }
 , name ? "crucible-llvm"
+, additionalInputs ? pkgs: []
+, additionalHaskellInputs ? pkgs: []
 }:
 
 let gpkgs = import ./local.nix { };
@@ -10,7 +12,10 @@ in with pkgs; stdenv.mkDerivation {
   buildInputs = [
     (gpkgs.haskellPackages.ghcWithPackages (hpkgs: with hpkgs; [
       ghcid
-    ] ++ this.buildInputs ++ this.propagatedBuildInputs))
+
+    ] ++ this.buildInputs
+      ++ this.propagatedBuildInputs
+      ++ additionalHaskellInputs gpkgs.haskellPackages))
 
     haskellPackages.cabal-install
     haskellPackages.hlint
@@ -19,5 +24,5 @@ in with pkgs; stdenv.mkDerivation {
     git
     which
     zsh
-  ];
+  ] ++ additionalInputs gpkgs;
 }

@@ -1,7 +1,7 @@
-{ pkgs ? import ./pinned-pkgs.nix { } }:
+{ pkgs ? import ../pinned-pkgs.nix { } }:
 
 with pkgs;
-let crux-llvm = (import ./local.nix { }).haskellPackages.crux-llvm;
+let crux-llvm = (import ../local.nix { }).haskellPackages.crux-llvm;
     csrc = writeTextFile {
       name = "test.c";
       text = ''
@@ -14,7 +14,7 @@ let crux-llvm = (import ./local.nix { }).haskellPackages.crux-llvm;
         }
       '';
     };
-    fizzbc = copyPathToStore ../fizz-hkdf/nix/linked.HkdfTest.bc;
+    fizzbc = copyPathToStore ../../fizz-hkdf/nix/linked.HkdfTest.bc;
 in stdenv.mkDerivation {
    name = "run-crux";
    buildInputs = [ clang_6 llvm_6 z3 crux-llvm ];

@@ -14,7 +14,12 @@ let
   hlib = pkgsOld.haskell.lib;
 
   # Find the appropriate JSON source spec
-  sources = import ./sources.nix { inherit sourceType; };
+  sources  = import ./sources.nix { inherit sourceType; };
+  wrappers = import ./wrappers.nix { inherit hlib buildType; };
+  mk = import ./mk.nix {
+    inherit (pkgsOld) fetchFromGitHub;
+    haskellPackages = haskellPackagesNew;
+  };
 
   # For packages that have different behavior for different GHC versions
   switchGHC = arg: arg."${compiler}" or arg.otherwise;
@@ -24,46 +29,6 @@ let
     "${ver}"  = wrappers.jailbreak pkg;
     otherwise = pkg;
   };
-
-  # Wrappers
-  disableOptimization = pkg: hlib.appendConfigureFlag pkg "--disable-optimization"; # In newer nixpkgs
-  wrappers = rec {
-    nocov            = x: hlib.dontCoverage x;
-    noprof           = x: hlib.disableExecutableProfiling (hlib.disableLibraryProfiling (nocov x));
-    notest           = x: hlib.dontCheck (noprof x);
-    exe              = x: hlib.justStaticExecutables (wrappers.default x);
-    jailbreak        = x: hlib.doJailbreak x;
-    jailbreakDefault = x: wrappers.jailbreak (wrappers.default x);
-    #
-    fast    = x: disableOptimization (notest x);
-    good    = x: hlib.dontCheck (nocov x);
-    default = wrappers.${buildType};
-  };
-
-  # Main builder function. Reads in a JSON describing the git revision and
-  # SHA256 to fetch, then calls cabal2nix on the source.
-  mk =
-    { name
-    , json
-    , owner ? "GaloisInc"
-    , repo ? name
-    , subdir ? ""
-    , sourceFilesBySuffices ? x: y: x
-    , wrapper ? wrappers.default
-    }:
-
-    let
-      fromJson = builtins.fromJSON (builtins.readFile json);
-
-      src = sourceFilesBySuffices
-        ((pkgsOld.fetchFromGitHub {
-          inherit owner repo;
-          inherit (fromJson) rev sha256;
-        }) + "/" + subdir) [".hs" "LICENSE" "cabal" ".c"];
-
-    in builtins.trace ("mk: " + name)
-         (wrapper
-          (haskellPackagesNew.callCabal2nix name src { }));
 
   # ABC has a tricky build...
   abc    = pkgsOld.callPackage ./abc.nix { };
@@ -91,7 +56,7 @@ let
   # A package in a subdirectory of Crucible
   useCrucible = name: mk {
     inherit name;
-    json   = ./json/crucible.json;
+    json   = sources.crucible;
     repo   = "crucible";
     subdir = name;
   };
@@ -147,7 +112,7 @@ in {
   # The version on Hackage should work, its just not in nixpkgs yet
   parameterized-utils = mk {
     name = "parameterized-utils";
-    json = ./json/parameterized-utils.json;
+    json = sources.parameterized-utils;
     # TODO: why is this not default?
     wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
   };
@@ -253,6 +218,12 @@ in {
 #################################################################
 # ** Hackage dependencies
 
+  # constraints = mk {
+  #   name = "constraints";
+  #   owner = "ekmett";
+  #   json = ./json/constraints.json;
+  # };
+
   itanium-abi = mk {
     name = "itanium-abi";
     owner = "travitch";
@@ -355,64 +326,4 @@ in {
     src = "${haskellPackagesNew.haskell-code-explorer.src}/vendor/cabal-helper-0.8.1.2";
   });
   haddock-library = wrappers.jailbreak haskellPackagesOld.haddock-library;
-
-#################################################################
-# ** haskell-ide-engine
-
-
-  # nix-shell --pure -p nix-prefetch-git --run 'nix-prefetch-git https://github.com/haskell/haskell-ide-engine 0.5.0.0 > ./json/tools/hie.json'
-  hie = mk {
-    name  = "haskell-ide-engine";
-    owner = "haskell";
-    json  = ./json/tools/hie.json;
-  };
-
-  hie-plugin-api = mk {
-    name    = "haskell-ide-engine";
-    owner   = "haskell";
-    json    = ./json/tools/hie.json;
-    subdir  = "hie-plugin-api";
-  };
-
-  # For hie-plugin-api
-  constrained-dynamic = wrappers.default haskellPackagesOld.constrained-dynamic;
-
-  # hie/submodules: 53979f0
-  HaRe = mk {
-    name    = "HaRe";
-    owner   = "alanz";
-    json    = ./json/tools/hare.json;
-    wrapper = x: hlib.dontHaddock (wrappers.jailbreakDefault x);
-  };
-
-  haskell-lsp = mk {
-    name    = "haskell-lsp";
-    owner   = "alanz";
-    json    = ./json/tools/haskell-lsp.json;
-    # wrapper = wrappers.jailbreakDefault;
-  };
-
-  haskell-lsp-types = mk {
-    name    = "haskell-lsp";
-    owner   = "alanz";
-    json    = ./json/tools/haskell-lsp.json;
-    subdir  = "haskell-lsp-types";
-    # wrapper = wrappers.jailbreakDefault;
-  };
-
-  # Commit 3ccd528, See https://github.com/DanielG/ghc-mod/pull/937
-  ghc-mod = mk {
-    name    = "ghc-mod";
-    owner   = "alanz";
-    json    = ./json/tools/ghc-mod.json;
-    wrapper = wrappers.jailbreakDefault;
-  };
-
-  ghc-mod-core = mk {
-    name    = "ghc-mod";
-    owner   = "alanz";
-    json    = ./json/tools/ghc-mod.json;
-    subdir  = "core";
-    wrapper = wrappers.jailbreakDefault;
-  };
 }

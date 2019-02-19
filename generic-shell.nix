@@ -18,7 +18,7 @@ in with pkgs; stdenv.mkDerivation {
       ++ additionalHaskellInputs gpkgs.haskellPackages))
 
     haskellPackages.cabal-install
-    haskellPackages.hlint
+    # haskellPackages.hlint
     # haskellPackages.importify
 
     git

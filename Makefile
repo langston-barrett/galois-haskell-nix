@@ -2,6 +2,7 @@ PKGS ?= \
   abcBridge \
   aig \
   binary-symbols \
+  constraints \
   crackNum \
   cryptol \
   crucible \
@@ -43,6 +44,7 @@ PKGS ?= \
 #
 # TODO: This is unused. Should make update-all target.
 JSON ?= \
+  constraints \
   crackNum \
   crucible \
   cryptol \
@@ -91,6 +93,8 @@ json:
 		nix-prefetch-git "ssh://git@github.com/elliottt/$(BN)" > "$(basename $@)"; \
 	elif [[ $(BN) == "sbv" || $(BN) == "crackNum" ]]; then \
 		nix-prefetch-git "ssh://git@github.com/LeventErkok/$(BN)" > "$(basename $@)"; \
+	elif [[ $(BN) == "constraints" ]]; then \
+		nix-prefetch-git "ssh://git@github.com/ekmett/$(BN)" > "$(basename $@)"; \
 	elif [[ $(BN) == "itanium-abi" ]]; then \
 		nix-prefetch-git "ssh://git@github.com/travitch/$(BN)" > "$(basename $@)"; \
 	else \

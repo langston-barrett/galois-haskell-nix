@@ -1,0 +1,7 @@
+{
+  "url": "ssh://git@github.com/ekmett/constraints",
+  "rev": "963c0e904ad48a5cec29a0cb649622d8c1872af4",
+  "date": "2018-12-10T06:56:16-05:00",
+  "sha256": "1707zd7kj2m7g17bbjmpikhmj03iy3lbv243d0h1zndmvcdpsn84",
+  "fetchSubmodules": true
+}

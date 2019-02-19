@@ -8,6 +8,11 @@
 let
   case = arg: arg."${sourceType}" or arg.master;
 in {
+  # auto-yasnippet: SPC i S c
+  # ~pkg = case {
+  #   saw    = ./json/saw/~pkg.json;
+  #   master = ./json/~pkg.json;
+  # };
   crucible = case {
     saw    = ./json/saw/crucible.json;
     master = ./json/crucible.json;
@@ -19,6 +24,10 @@ in {
   llvm-pretty = case {
     saw    = ./json/saw/llvm-pretty.json;
     master = ./json/llvm-pretty.json;
+  };
+  parameterized-utils = case {
+    saw    = ./json/saw/parameterized-utils.json;
+    master = ./json/parameterized-utils.json;
   };
   saw-core = case {
     saw    = ./json/saw/saw-core.json;

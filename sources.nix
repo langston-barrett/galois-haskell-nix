@@ -17,6 +17,14 @@ in {
     saw    = ./json/saw/crucible.json;
     master = ./json/crucible.json;
   };
+  cryptol = case {
+    saw    = ./json/saw/cryptol.json;
+    master = ./json/cryptol.json;
+  };
+  cryptol-verifier = case {
+    saw    = ./json/saw/cryptol-verifier.json;
+    master = ./json/cryptol-verifier.json;
+  };
   macaw = case {
     saw    = ./json/saw/macaw.json;
     master = ./json/macaw.json;

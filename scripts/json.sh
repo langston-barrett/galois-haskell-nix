@@ -13,8 +13,12 @@ for pkg in ${args[*]}; do
     owner="elliottt"
   elif [[ $pkg == "sbv" || $pkg == "crackNum" ]]; then
     owner="LeventErkok"
+    break # don't update this to master
   elif [[ $pkg == "constraints" ]]; then
-    owner="constraints"
+    owner="ekmett"
+    break # don't update this to master
+  elif [[ $pkg == "itanium-abi" ]]; then
+    owner="travitch"
   fi
 
   url="ssh://git@github.com/$owner/$pkg"

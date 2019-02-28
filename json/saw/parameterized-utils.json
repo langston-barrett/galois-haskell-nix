@@ -1,7 +1,7 @@
 {
   "url": "https://github.com/GaloisInc/parameterized-utils",
-  "rev": "2668a49673de2e4123d2b4b4cf49e114d3d8a5fe",
-  "date": "2019-01-30T14:02:31-08:00",
-  "sha256": "0njapf2csrpxhhx5mfajmpap4gil4xnx5xw1z2b6qaaa4yx446qq",
+  "rev": "0aa7f1dd1d8dc47084f6a3728e1c60766ef67494",
+  "date": "2019-02-07T17:47:42-08:00",
+  "sha256": "0miv9zr9h8zz0mlch59jdkx26cdwwln8qqa52hz0d1bgghdfq257",
   "fetchSubmodules": false
 }

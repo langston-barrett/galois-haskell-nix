@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/GaloisInc/cryptol-verifier",
-  "rev": "892365d1f152de0d5c5b4f577e5916667f45b895",
-  "date": "2018-12-13T15:54:01-08:00",
-  "sha256": "0ny14ynqp9xd9zydf0l3jrj8sn53rqsjcam4pzbdwzjhnj546kpf",
-  "fetchSubmodules": false
+  "rev": "c74a597295f4f77da16dcb5254f31bb71e89e858",
+  "date": "2019-02-20T18:07:36-08:00",
+  "sha256": "1nqrl7j48x11xrrv9aqzq5s30yss8c849fb9zvlh6jl8wiipljp3",
+  "fetchSubmodules": true
 }

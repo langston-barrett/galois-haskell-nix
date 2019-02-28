@@ -2,6 +2,8 @@
 # SHA256 to fetch, then calls cabal2nix on the source.
 { fetchFromGitHub
 , haskellPackages
+, hlib
+, buildType ? "fast"
 }:
 
 { name
@@ -10,7 +12,7 @@
 , repo ? name
 , subdir ? ""
 , sourceFilesBySuffices ? x: y: x
-, wrapper ? x: x
+, wrapper ? (import ./wrappers.nix { inherit hlib buildType; }).default
 }:
 
 let

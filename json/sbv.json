@@ -1,7 +1,7 @@
 {
-  "url": "ssh://git@github.com/LeventErkok/sbv",
-  "rev": "427f2752a4fb5356d65e1479e5ac9f34b9bd7711",
-  "date": "2019-02-09T08:23:18-08:00",
-  "sha256": "050wwpiyis6mi5pnb7pqjv8nrn5k2f12bgqdgc620v47b7xvsk51",
+  "url": "https://github.com/LeventErkok/sbv",
+  "rev": "a2f71a07fa7896bebcc2f91e20eeb00162138e7d",
+  "date": "2019-01-14T15:50:44-08:00",
+  "sha256": "0b6a9lj3ch1iji6kia7jpri87v2jnk68chpshxv54wzld93c2qvb",
   "fetchSubmodules": false
 }

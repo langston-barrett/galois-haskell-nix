@@ -1,7 +1,7 @@
 # Overrides to the default Haskell package set for most Galois packages
 { pkgsOld  ? import ./pinned-pkgs.nix { }
 , compiler # ? "ghc843"
-, sourceType ? "saw"  # "master" or "saw"
+, sourceType ? "master"  # "master" or "saw"
 , buildType  ? "fast" # "good" (optimized) or "fast" (unoptimized)
 }:
 
@@ -18,6 +18,7 @@ let
   wrappers = import ./wrappers.nix { inherit hlib buildType; };
   mk = import ./mk.nix {
     inherit (pkgsOld) fetchFromGitHub;
+    inherit hlib;
     haskellPackages = haskellPackagesNew;
   };
 
@@ -91,12 +92,12 @@ in {
 
   cryptol = mk {
     name   = "cryptol";
-    json   = ./json/cryptol.json;
+    json   = sources.cryptol;
   };
 
   cryptol-verifier = addABC (mk {
     name = "cryptol-verifier";
-    json = ./json/cryptol-verifier.json;
+    json = sources.cryptol-verifier;
   });
 
   elf-edit = mk {

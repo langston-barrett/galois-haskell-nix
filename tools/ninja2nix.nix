@@ -5,13 +5,21 @@
 
 import ../default.nix {
   overrides = haskellPackagesNew: haskellPackagesOld:
-    let mk = import ../mk.nix {
+    let hlib = pkgsOld.haskell.lib;
+        mk = import ../mk.nix {
           inherit (pkgsOld) fetchFromGitHub;
+          inherit hlib;
           haskellPackages = haskellPackagesNew;
         };
-        hlib = pkgsOld.haskell.lib;
         wrappers = import ../wrappers.nix { inherit hlib; };
+        nixpkgs-master =
+          import ../pinned-pkgs.nix { path = ../json/nixpkgs/master.json; };
     in {
+
+    smallcheck-series = nixpkgs-master.haskell.packages.ghc844.smallcheck-series;
+    # https://github.com/jdnavarro/smallcheck-lens/issues/6
+    smallcheck-lens =
+      hlib.doJailbreak (nixpkgs-master.haskell.packages.ghc844.smallcheck-lens);
 
     ninja2nix = mk {
       name    = "ninja2nix";
@@ -27,7 +35,6 @@ import ../default.nix {
       wrapper = wrappers.jailbreakDefault;
     };
 
-    smallcheck-series = hlib.doJailbreak haskellPackagesOld.smallcheck-series;
     monad-mock = hlib.doJailbreak haskellPackagesOld.monad-mock;
 
     makefile = mk {

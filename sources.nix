@@ -26,8 +26,9 @@ in {
     master = ./json/cryptol-verifier.json;
   };
   macaw = case {
+    # saw    = ./json/saw/macaw.json;
     saw    = ./json/saw/macaw.json;
-    master = ./json/macaw.json;
+    master = ./json/saw/macaw.json;
   };
   llvm-pretty = case {
     saw    = ./json/saw/llvm-pretty.json;

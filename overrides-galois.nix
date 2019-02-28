@@ -69,6 +69,10 @@ let
 
   macaw = withSubdirs "macaw" (suffix: suffix);
 
+  nixpkgs-master =
+    import ../pinned-pkgs.nix { path = ../json/nixpkgs/master.json; };
+  hpkgs-master = nixpkgs-master.haskell.packages."${compiler}";
+
 in {
 
 #################################################################
@@ -193,7 +197,7 @@ in {
   macaw-x86-symbolic = macaw "x86_symbolic";
 
   what4     = what4 "";
-  what4-sbv = what4 "sbv";
+  # what4-sbv = what4 "sbv";
   what4-abc = addABC (what4 "abc");
 
 #################################################################

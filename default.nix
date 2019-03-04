@@ -2,6 +2,7 @@
 { pkgsOld   ? import ./pinned-pkgs.nix { }
 , compiler  ? "ghc843"
 , overrides ? import ./overrides-galois.nix { inherit compiler; }
+, pkgsNew   ? ./json/nixpkgs/18.09.json
 }:
 
 let
@@ -18,7 +19,7 @@ let
   };
 
   # Make sure this matches the one in pinned-pkgs.nix (TODO: put in separate file?)!
-  nixpkgs = builtins.fromJSON (builtins.readFile ./json/nixpkgs/18.09.json);
+  nixpkgs = builtins.fromJSON (builtins.readFile pkgsNew);
 
 in import (pkgsOld.fetchFromGitHub {
   owner = "NixOS";

@@ -6,6 +6,7 @@ let disableOptimization = pkg: hlib.appendConfigureFlag pkg "--disable-optimizat
     wrappers = rec {
       nocov            = x: hlib.dontCoverage x;
       noprof           = x: hlib.disableExecutableProfiling (hlib.disableLibraryProfiling (nocov x));
+      # noprof           = x: x;
       notest           = x: hlib.dontCheck (noprof x);
       exe              = x: hlib.justStaticExecutables (wrappers.default x);
       jailbreak        = x: hlib.doJailbreak x;

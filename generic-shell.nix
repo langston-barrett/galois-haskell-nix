@@ -1,28 +1,33 @@
-{ pkgs ? import ./pinned-pkgs.nix { }
-, name ? "crucible-llvm"
+{ pkgs  ? import ./pinned-pkgs.nix { }
+, hpkgs ? import ./local.nix { }
+, name
 , additionalInputs ? pkgs: []
 , additionalHaskellInputs ? pkgs: []
 }:
 
-let gpkgs = import ./local.nix { };
-    this  = gpkgs.haskellPackages.${name};
+let this  = hpkgs.haskellPackages.${name};
 in with pkgs; stdenv.mkDerivation {
   inherit name;
   src = if lib.inNixShell then null else lib.sourceFilesBySuffices ../. [ ".cabal" ".hs" ];
+  shellHook = ''
+    # 4mil KB = 4GB mem
+    echo "try:"
+    echo "ulimit -v 4000000"
+  '';
   buildInputs = [
-    (gpkgs.haskellPackages.ghcWithPackages (hpkgs: with hpkgs; [
+    (hpkgs.haskellPackages.ghcWithPackages (hpkgs': with hpkgs'; [
       ghcid
-
     ] ++ this.buildInputs
       ++ this.propagatedBuildInputs
-      ++ additionalHaskellInputs gpkgs.haskellPackages))
+      ++ additionalHaskellInputs hpkgs'))
 
     haskellPackages.cabal-install
     # haskellPackages.hlint
     # haskellPackages.importify
 
+    firejail
     git
     which
     zsh
-  ] ++ additionalInputs gpkgs;
+  ] ++ additionalInputs hpkgs;
 }

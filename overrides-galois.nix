@@ -119,7 +119,7 @@ in {
     name = "parameterized-utils";
     json = sources.parameterized-utils;
     # TODO: why is this not default?
-    wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
+    # wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
   };
 
   saw-script = addABC (mk {
@@ -315,7 +315,7 @@ in {
   haskell-code-explorer = mk {
     name = "haskell-code-explorer";
     owner = "alexwl";
-    json = ./json/tools/haskell-code-explorer.json;
+    json = ./tools/json/haskell-code-explorer.json;
   };
 
   # cabal-helper    = hlib.doJailbreak (mk {

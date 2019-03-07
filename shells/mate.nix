@@ -11,6 +11,7 @@ with pkgs; stdenv.mkDerivation {
     cmake
     clang_6
     llvm_6
+    curl
     nlohmann_json
     pythonPackages.XlsxWriter
     pythonPackages.pycrypto

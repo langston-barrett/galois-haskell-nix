@@ -17,6 +17,8 @@ with pkgs; stdenv.mkDerivation {
           ../tests/simple/guessing-game/edges.csv;
         popd
     }
+
+    export PYTHONPATH=$PYTHONPATH:$HOME/code/MATE/db/query
   '';
   propagatedBuildInputs = [
     git
@@ -37,6 +39,8 @@ with pkgs; stdenv.mkDerivation {
     python3Packages.pytest
     python3Packages.hypothesis
     python3Packages.jsonschema
+    python3Packages.typing-extensions
+    python3Packages.sphinx
     # python36Packages.virtualenv
 
     # Shake
@@ -52,7 +56,11 @@ with pkgs; stdenv.mkDerivation {
     # Python
     # pythonPackages.autoflake
     python3Packages.flake8
+    python3Packages.pydocstyle
     python3Packages.importmagic
+    python3Packages.pylint
+    python3Packages.pycodestyle
+    python3Packages.pyflakes
     python3Packages.yapf
 
     # C++

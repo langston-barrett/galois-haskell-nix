@@ -79,7 +79,7 @@ use these builds, import this package set in your Nix file and access its
 
    This section lists all the projects that currently build successfully.
    It can be regenerated with ~make status~.
-   Last updated on 2019-03-06.
+   Last updated on 2019-03-26.
 
    - aig: ☑
    - abcBridge: ☑

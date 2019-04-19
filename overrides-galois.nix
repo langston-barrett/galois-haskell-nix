@@ -118,8 +118,7 @@ in {
   parameterized-utils = mk {
     name = "parameterized-utils";
     json = sources.parameterized-utils;
-    # TODO: why is this not default?
-    # wrapper = x: hlib.linkWithGold (hlib.disableLibraryProfiling x);
+    wrapper = wrappers.jailbreakDefault;
   };
 
   saw-script = addABC (mk {

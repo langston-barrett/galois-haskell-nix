@@ -6,6 +6,7 @@ with pkgs; stdenv.mkDerivation {
   shellHook = ''
     export CC=clang
     export CXX=clang++
+    export BOOST_ROOT=""
 
     guessing_game() {
       tp *.csv *.db
@@ -64,6 +65,7 @@ with pkgs; stdenv.mkDerivation {
     python3Packages.yapf
 
     # C++
+    boost
     clang-analyzer
     cppcheck
     include-what-you-use

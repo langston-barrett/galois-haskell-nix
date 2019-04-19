@@ -41,7 +41,7 @@ let
 in with haskellPackagesOld; {
   # Use with auto-yasnippet (SPC i S c)
   # ~pkg = alterSrc ~pkg (../~pkg);
-  # saw-script     = alterSrc saw-script (../saw-script);
+  saw-script     = alterSrc saw-script (../saw-script);
 }
 //
 
@@ -66,7 +66,7 @@ in with haskellPackagesOld; {
   # parameterized-utils = alterSrc parameterized-utils (../parameterized-utils);
   # parameterized-utils = addDeps parameterized-utils (../parameterized-utils) [constraints];
   # what4               = addDeps what4 (../crucible/what4) [deriving-compat];
-  # what4               = alterSrc what4 (../crucible/what4);
+  what4               = alterSrc what4 (../crucible/what4);
   # crux-llvm           = alterSrc crux-llvm (../crucible/crux-llvm);
 })
 //

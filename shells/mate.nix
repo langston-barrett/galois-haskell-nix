@@ -1,13 +1,12 @@
 { pkgs ? import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { } }:
 
-# set_source_files_properties(ASTGraphWriter.cpp PROPERTIES COMPILE_FLAGS "-fsanitize=address -fsanitize=undefined -pedantic")
 with pkgs; stdenv.mkDerivation {
   name = "mate";
   shellHook = ''
     export CC=clang
     export CXX=clang++
-    export BOOST_ROOT=""
 
+    # This can be run in the guessing game directory to make it go. 
     guessing_game() {
       tp *.csv *.db
       pushd ../../../llvm/build && make -j2 ; popd && \
@@ -23,11 +22,10 @@ with pkgs; stdenv.mkDerivation {
   '';
   propagatedBuildInputs = [
     git
-    zsh
 
     cmake
-    clang_6
-    llvm_6
+    clang_7
+    llvm_7
     curl
     nlohmann_json
     python
@@ -46,14 +44,12 @@ with pkgs; stdenv.mkDerivation {
 
     # Shake
     haskellPackages.cabal-install
-    # (haskellPackages.ghcWithPackages (hpkgs: with hpkgs; [ shake ]))
     (haskell.packages.ghc822.ghcWithPackages (h: with h; [
       shake
-      # sqlite-simple
-      # optparse-applicative
     ]))
 
     # linters, analyzers, dev tools
+
     # Python
     # pythonPackages.autoflake
     python3Packages.flake8
@@ -69,6 +65,7 @@ with pkgs; stdenv.mkDerivation {
     clang-analyzer
     cppcheck
     include-what-you-use
-    llvmPackages_6.clang-unwrapped.python
-  ] ++ llvm_6.buildInputs;
+    llvmPackages_7.clang-unwrapped.python
+
+  ] ++ llvm_7.buildInputs;
 }

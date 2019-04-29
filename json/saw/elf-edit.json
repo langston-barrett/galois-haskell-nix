@@ -1,7 +1,7 @@
 {
-  "url": "ssh://git@github.com/GaloisInc/elf-edit",
+  "url": "https://github.com/GaloisInc/elf-edit",
   "rev": "1b4608098e6ead9ce32e25c53c55c029d5d4511f",
   "date": "2019-04-08T16:18:19-07:00",
   "sha256": "0w216rgkhr5cm415n7jnx7kr20gcfvzk6vgib5xpqc8z5d23m3dn",
-  "fetchSubmodules": true
+  "fetchSubmodules": false
 }

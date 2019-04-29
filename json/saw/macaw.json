@@ -1,7 +1,7 @@
 {
   "url": "https://github.com/GaloisInc/macaw",
-  "rev": "cd87c12f28f5ab3eae60fe665134b5fa7277f06f",
-  "date": "2019-03-06T11:52:22-08:00",
-  "sha256": "0g79l16cdp9scppp2x583pz8b5mac1rxn01dymyczap8mqk7pki3",
+  "rev": "39b9d368f6a963c206c92bc52c5040345af9783b",
+  "date": "2019-04-12T12:42:49-07:00",
+  "sha256": "1cx2rj052s8l43w17srbklr75f44l6x76j0q05vdggf24bh8300l",
   "fetchSubmodules": false
 }

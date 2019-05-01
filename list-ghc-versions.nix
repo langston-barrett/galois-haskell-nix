@@ -1,6 +1,6 @@
 # Use: nix-shell list-ghc-versions.nix
 # Adapted from: https://github.com/pa-ba/compdata/compare/master...srdqty:srd-nix?expand=1
-{ pkgs ? import ./pinned-pkgs.nix { };
+{ pkgs ? import ./pinned-pkgs.nix { }
 }:
 let compilers     = builtins.attrNames pkgs.haskell.packages;
     compilersText = builtins.concatStringsSep "\n" compilers;

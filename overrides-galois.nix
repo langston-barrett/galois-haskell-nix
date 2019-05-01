@@ -1,6 +1,6 @@
 # Overrides to the default Haskell package set for most Galois packages
 { pkgsOld  ? import ./pinned-pkgs.nix { }
-, compiler # ? "ghc843"
+, compiler # ? "ghc864"
 , sourceType ? "master"  # "master" or "saw"
 , buildType  ? "fast" # "good" (optimized) or "fast" (unoptimized)
 }:

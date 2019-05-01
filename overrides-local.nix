@@ -59,14 +59,14 @@ in with haskellPackagesOld; {
 
 (with haskellPackagesOld; {
   # crucible            = alterSrc crucible (../crucible/crucible);
-  # crucible-llvm       = alterSrc crucible-llvm (../crucible/crucible-llvm);
+  crucible-llvm       = alterSrc crucible-llvm (../crucible/crucible-llvm);
   # crucible-llvm       = addDeps crucible-llvm (../crucible/crucible-llvm) [itanium-abi];
   # crucible-jvm        = alterSrc crucible-jvm (../crucible/crucible-jvm);
   # crucible-saw        = alterSrc crucible-saw (../crucible/crucible-saw);
   # parameterized-utils = alterSrc parameterized-utils (../parameterized-utils);
   # parameterized-utils = addDeps parameterized-utils (../parameterized-utils) [constraints];
   # what4               = addDeps what4 (../crucible/what4) [deriving-compat];
-  what4               = alterSrc what4 (../crucible/what4);
+  # what4               = alterSrc what4 (../crucible/what4);
   # crux-llvm           = alterSrc crux-llvm (../crucible/crux-llvm);
 })
 //
@@ -75,7 +75,7 @@ in with haskellPackagesOld; {
 
 (with haskellPackagesOld; {
   # llvm-pretty = alterSrc llvm-pretty (../llvm-pretty-bc-parser/llvm-pretty);
-  llvm-pretty-bc-parser = alterSrc llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
+  # llvm-pretty-bc-parser = alterSrc llvm-pretty-bc-parser (../llvm-pretty-bc-parser);
 })
 //
 

@@ -11,8 +11,7 @@ let
     url = "https://github.com/GaloisInc/abcBridge.git";
     deepClone = true;
     rev = "e5b6ddc63349c8b676771be672a40521f63aa8b3";
-    # 1w14qm92wy9qjil5dfj9a69073jivvj02c8ybycyazwpflzwqk3l
-    sha256 = "0sb95f5krgl2xkz19fv4rr6c0hs2ypd70g9yqr8nl5r4rb37nmsm";
+    sha256 = "06hmchgi1l47r7l3dqiggax9gyxvrc0kki21qlmkszlki95c8zg1";
   };
 in mkDerivation {
   inherit src;

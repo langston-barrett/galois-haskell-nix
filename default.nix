@@ -8,6 +8,7 @@
 let
   config = {
     allowUnfree = true; # https://github.com/GaloisInc/flexdis86/pull/1 # TODO: still necessary?
+    allowBroken = true; # GHC 8.8.1, bytestring-handle
     packageOverrides = pkgs: rec {
       haskellPackages =
         # See available GHC versions by uncomenting this line:

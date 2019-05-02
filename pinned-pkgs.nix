@@ -1,5 +1,5 @@
 { pkgs ? import <nixpkgs> { }
-, path ? ./json/nixpkgs/19.03.json
+, path ? ./json/nixpkgs/master.json
 }:
 
 # Why this revision of nixpkgs? One reason is that it is modern enough to have

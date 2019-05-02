@@ -32,7 +32,7 @@ let
   };
 
   # ABC has a tricky build...
-  abc    = pkgsOld.callPackage ./abc.nix { };
+  abc    = pkgsOld.callPackage ./pkgs/abc.nix { };
   addABC = drv: drv.overrideDerivation (oldAttrs: {
       buildPhase = ''
         export NIX_LDFLAGS+=" -L${abc} -L${abc}/lib"
@@ -79,7 +79,7 @@ in {
 # ** Galois libraries
 
   # Need newer version, to override cabal2nix's inputs
-  abcBridge = wrappers.default (haskellPackagesNew.callPackage ./abcBridge.nix { });
+  abcBridge = wrappers.default (haskellPackagesNew.callPackage ./pkgs/abcBridge.nix { });
 
   aig = mk {
     name = "aig";
@@ -234,7 +234,7 @@ in {
     json = ./json/itanium-abi.json;
   };
 
-  # Needed for SBV 8
+  # Needed for SBV 8, still not in 19.03
   crackNum = mk {
     name = "crackNum";
     owner = "LeventErkok";
@@ -300,11 +300,43 @@ in {
   # hspec-core:    Needs nixpkgs update: https://github.com/hspec/hspec/issues/379
   Glob          = jailbreakOnGHC "ghc861" haskellPackagesOld.Glob;
   StateVar      = jailbreakOnGHC "ghc861" haskellPackagesOld.StateVar;
-  cabal-doctest = jailbreakOnGHC "ghc861" haskellPackagesOld.cabal-doctest;
+  # cabal-doctest = jailbreakOnGHC "ghc861" haskellPackagesOld.cabal-doctest;
   contravariant = jailbreakOnGHC "ghc861" haskellPackagesOld.contravariant;
   doctest       = jailbreakOnGHC "ghc861" haskellPackagesOld.doctest;
   hspec-core    = jailbreakOnGHC "ghc861" haskellPackagesOld.hspec-core;
   unordered-containers = jailbreakOnGHC "ghc861" haskellPackagesOld.unordered-containers;
+
+  # These are all as of nixpkgs on May 5, 2019
+  #
+  # cabal-doctest:      Cabal >=1.10 && <2.5, base >=4.3 && <4.13
+  # parallel:           base >=4.3 && <4.13
+  # integer-logarithms: base >=4.3 && <4.13
+  parallel           = jailbreakOnGHC "ghc881" haskellPackagesOld.parallel;
+  integer-logarithms = jailbreakOnGHC "ghc881" haskellPackagesOld.integer-logarithms;
+  comonad            = wrappers.notest (jailbreakOnGHC "ghc881" haskellPackagesOld.comonad);
+  # Hmm... cabal2nix depends on dlist.
+  dlist = switchGHC {
+    "ghc881"  = haskellPackagesOld.callPackage ./pkgs/dlist.nix { };
+    otherwise = haskellPackagesOld.dlist;
+  };
+  # TODO: this is failing
+  cabal-doctest = switchGHC {
+    "ghc881"  =
+      hlib.appendPatch
+        (wrappers.jailbreak (haskellPackagesOld.callPackage ./pkgs/cabal-doctest.nix { }))
+        ./pkgs/cabal-doctest.patch;
+    # waiting on: https://github.com/phadej/cabal-doctest/pull/44
+    otherwise = haskellPackagesOld.cabal-doctest;
+  };
+  tar = switchGHC {
+    "ghc881"  = haskellPackagesOld.callPackage ./pkgs/tar.nix { };
+    otherwise = haskellPackagesOld.tar;
+  };
+  th-abstraction = switchGHC {
+    "ghc881"  = haskellPackagesOld.callPackage ./pkgs/th-abstraction.nix { };
+    otherwise = haskellPackagesOld.th-abstraction;
+  };
+
 
 #################################################################
 # ** haskell-code-explorer

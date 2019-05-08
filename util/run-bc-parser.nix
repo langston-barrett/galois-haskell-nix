@@ -1,6 +1,7 @@
 # { pkgs ? import ../pinned-pkgs.nix { } }:
 # { pkgs ? import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { } }:
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { }
+}:
 
 with pkgs;
 let name = "llvm-pretty-bc-parser";
@@ -11,21 +12,18 @@ let name = "llvm-pretty-bc-parser";
     llvm   = pkgs.llvm_7;
     stdenv = pkgs.llvmPackages_7.libcxxStdenv;
 
-    libs = import ../../whole-world-llvm/libs.nix { inherit llvm stdenv; };
-    fizzbc      = copyPathToStore ../../fizz-hkdf/nix/linked.HkdfTest.bc;
-    libcxxbc    = libs.libcxx.bitcode;
-    libcxxabibc = libs.libcxxabi.bitcode;
+    # libs = import ../../whole-world-llvm/libs.nix { inherit llvm stdenv; };
+    # fizzbc      = copyPathToStore ../../fizz-hkdf/nix/linked.HkdfTest.bc;
+    # libcxxbc    = libs.libcxx.bitcode;
+    # libcxxabibc = libs.libcxxabi.bitcode;
 
-    csrc = writeTextFile {
-      name = "test.c";
-      text = ''
-        int main() {
-          int x = 5;
-          int y = 2;
-          return 0;
-        }
-      '';
-    };
+    # csrc = writeTextFile {
+    #   name = "test.c";
+    #   text = lib.fileContents ./run-bc-parser.c;
+    # };
+    csrc = null;
+    bc = ./ffs.bc;
+
 in stdenv.mkDerivation {
    name = "run-${name}";
    buildInputs = [ this llvm ];
@@ -36,13 +34,17 @@ in stdenv.mkDerivation {
      cp ${makefile} ./Makefile
 
      # Copy bitcode
-     for f in ${libcxxabibc}/*.bc ${libcxxbc}/*.bc; do
-       (cp "$f" . || true)
-     done
-     cp ${fizzbc} ./test.bc
+     # for f in {libcxxabibc}/*.bc {libcxxbc}/*.bc; do
+     #   (cp "$f" . || true)
+     # done
+     # cp {fizzbc} ./test.bc
 
-     # Compile C
-     cp ${csrc} ./prog.c
+     # Compile C or copy bitcode
+
+     ${if csrc != null
+       then "cp ${csrc} prog.c"
+       else "cp ${bc} prog.bc"}
+
      for f in *.c; do
        clang -g -O0 -emit-llvm -c "$f"
      done

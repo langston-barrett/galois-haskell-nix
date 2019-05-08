@@ -8,9 +8,7 @@
 let this  = hpkgs.haskellPackages.${name};
     unstable =
       import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { };
-in with pkgs; stdenv.mkDerivation {
-  inherit name;
-  src = if lib.inNixShell then null else lib.sourceFilesBySuffices ../. [ ".cabal" ".hs" ];
+in with pkgs; pkgs.mkShell {
   shellHook = ''
     # 4mil KB = 4GB mem
     echo "try:"

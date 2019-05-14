@@ -22,7 +22,8 @@ use these builds, import this package set in your Nix file and access its
    - GHC 8.2.*: Error while building macaw. To be investigated...
    - GHC 8.4.*: Fully supported. There is [[https://ghc.haskell.org/trac/ghc/ticket/15186][a bug]] in this version of GHC
      that forces us to build without profiling enabled.
-   - GHC 8.6.*: Unsupported. Too many upstream dependencies aren't ready.
+   - GHC 8.6.*: Fully supported.
+   - GHC 8.8.*: Not yet released. Hold your horses!
 
 ** Hacking
 
@@ -73,13 +74,12 @@ use these builds, import this package set in your Nix file and access its
 ** TODO TODO
 
   - See what manually-edited Nix files can be removed
-  - Update all packages
 
 ** Status
 
    This section lists all the projects that currently build successfully.
    It can be regenerated with ~make status~.
-   Last updated on 2019-05-02.
+   Last updated on 2019-05-14.
 
    - aig: ☑
    - abcBridge: ☑

@@ -27,7 +27,6 @@ in with pkgs; pkgs.mkShell {
     haskellPackages.cabal-install
     # haskellPackages.importify
 
-    firejail
     git
     which
     zsh

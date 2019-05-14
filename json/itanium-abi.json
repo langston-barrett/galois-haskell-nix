@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/travitch/itanium-abi",
-  "rev": "9ce9a48009e2296032659cd17d0a107a6f4f4cf1",
-  "date": "2018-12-13T18:25:36-08:00",
-  "sha256": "1rpqmppad3gqwiqyj7kspgag575m52d1r02x0zcfcvcmfp9z3097",
-  "fetchSubmodules": false
+  "rev": "f4c38607302a2b1489fe88a881d7f2433e26b538",
+  "date": "2019-05-13T08:52:45-04:00",
+  "sha256": "0jj19pmq0hy9qa1dsiyajpa297z78hm4dnc7qz486w3i3yx8bb11",
+  "fetchSubmodules": true
 }

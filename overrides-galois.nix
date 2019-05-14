@@ -313,7 +313,7 @@ in {
   # integer-logarithms: base >=4.3 && <4.13
   parallel           = jailbreakOnGHC "ghc881" haskellPackagesOld.parallel;
   integer-logarithms = jailbreakOnGHC "ghc881" haskellPackagesOld.integer-logarithms;
-  comonad            = wrappers.notest (jailbreakOnGHC "ghc881" haskellPackagesOld.comonad);
+  comonad            = jailbreakOnGHC "ghc881" haskellPackagesOld.comonad;
   # Hmm... cabal2nix depends on dlist.
   dlist = switchGHC {
     "ghc881"  = haskellPackagesOld.callPackage ./pkgs/dlist.nix { };

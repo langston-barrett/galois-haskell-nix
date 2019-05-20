@@ -1,7 +1,7 @@
 { pkgs  ? import ./pinned-pkgs.nix { }
 , hpkgs ? import ./local.nix { }
 , name
-, additionalInputs ? pkgs: []
+, additionalInputs ? pkgs: unstable: []
 , additionalHaskellInputs ? pkgs: []
 }:
 
@@ -14,7 +14,13 @@ in with pkgs; pkgs.mkShell {
     echo "try:"
     echo "ulimit -v 4000000"
   '';
+
+  LANG = "en_US.utf8";
+  LC_CTYPE = "en_US.utf8";
+  LC_ALL = "en_US.utf8";
   buildInputs = [
+    glibcLocales # https://github.com/commercialhaskell/stack/issues/793
+
     (hpkgs.haskellPackages.ghcWithPackages (hpkgs': with hpkgs'; [
     ] ++ this.buildInputs
       ++ this.propagatedBuildInputs
@@ -30,5 +36,5 @@ in with pkgs; pkgs.mkShell {
     git
     which
     zsh
-  ] ++ additionalInputs hpkgs;
+  ] ++ (additionalInputs hpkgs unstable);
 }

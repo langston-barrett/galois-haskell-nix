@@ -221,12 +221,23 @@ in {
 
 #################################################################
 # ** Hackage dependencies
+#
+# Honestly, most of this should be done away with if possible.
+# We should probably switch on a nixpkgs version, not a GHC one.
 
   # constraints = mk {
   #   name = "constraints";
   #   owner = "ekmett";
   #   json = ./json/constraints.json;
   # };
+
+  # Need 0.3 for parameterized-utils
+  # th-abstraction = haskellPackagesOld.callPackage ./pkgs/th-abstraction.nix { };
+  # # These two are needed for th-abstraction
+  # generic-deriving  = wrappers.jailbreak haskellPackagesOld.generic-deriving;
+  # th-lift = haskellPackagesOld.callPackage ./pkgs/th-abstraction.nix { };
+  # # and for th-lift...
+  # th-orphans = wrappers.jailbreak (haskellPackagesNew.callPackage ./pkgs/th-orphans.nix { });
 
   itanium-abi = mk {
     name = "itanium-abi";
@@ -248,15 +259,16 @@ in {
     json = ./json/sbv.json;
   };
 
+  interpolate = haskellPackagesOld.interpolate;
+  hpack = haskellPackagesOld.hpack;
+  cabal2nix = haskellPackagesOld.cabal2nix;
   # https://github.com/NixOS/nixpkgs/blob/849b27c62b64384d69c1bec0ef368225192ca096/pkgs/development/haskell-modules/configuration-common.nix#L1080
-  hpack     = switchGHC {
-    "ghc822"  = hlib.dontCheck haskellPackagesNew.hpack_0_29_6;
-    otherwise = haskellPackagesOld.hpack;
-  };
-  cabal2nix = switchGHC {
-    "ghc822"  = hlib.dontCheck haskellPackagesOld.cabal2nix;
-    otherwise = haskellPackagesOld.cabal2nix;
-  };
+  # hpack     = switchGHC {
+  #   "ghc822"  = hlib.dontCheck haskellPackagesNew.hpack_0_29_6;
+  #   otherwise = haskellPackagesOld.hpack;
+  # };
+  #   "ghc822"  = hlib.dontCheck haskellPackagesOld.cabal2nix;
+  # };
 
   # These are all as of the nixpkgs pinned in json/nixpkgs-master.json.
   # aeson:        ???
@@ -332,11 +344,6 @@ in {
     "ghc881"  = haskellPackagesOld.callPackage ./pkgs/tar.nix { };
     otherwise = haskellPackagesOld.tar;
   };
-  th-abstraction = switchGHC {
-    "ghc881"  = haskellPackagesOld.callPackage ./pkgs/th-abstraction.nix { };
-    otherwise = haskellPackagesOld.th-abstraction;
-  };
-
 
 #################################################################
 # ** haskell-code-explorer

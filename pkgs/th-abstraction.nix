@@ -5,9 +5,9 @@ mkDerivation {
   pname = "th-abstraction";
   version = "0.3.1.0";
   src = fetchgit {
-    url = "https://github.com/glguy/th-abstraction";
-    sha256 = "0z2rfv07h3xfsp45sqsh7ddhh26ph6qhwjlh2b10459k1pmpd7bw";
-    rev = "855efbfdc0972094465492e1c862f760c068954d";
+    url = "https://github.com/glguy/th-abstraction.git";
+    sha256 = "05x9zhf07qka2jcil9a7sfh8si9xx4s8kzjnrs2g7r8qbw92n7w3";
+    rev = "00fcd437f35c3049ccca70ff644bdf38e8dce8d0";
     fetchSubmodules = true;
   };
   libraryHaskellDepends = [

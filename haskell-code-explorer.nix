@@ -27,9 +27,8 @@ let
   ] ++ pkgs.lib.concatLists (each (this: this.buildInputs))
     ++ pkgs.lib.concatLists (each (this: this.propagatedBuildInputs)));
   ghcPkgConf = ghcWP + "/lib/ghc-8.4.3/package.conf.d";
-in with pkgs; stdenv.mkDerivation {
+in with pkgs; pkgs.mkShell {
   name         = "galois-code-explorer";
-  src          = null;
   buildInputs  = [
     ghcWP
     haskellPackages.cabal-install

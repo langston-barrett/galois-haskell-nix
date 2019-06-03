@@ -1,0 +1,5 @@
+* github packages
+
+  These are =cabal2nix=-generated package files for stuff on Github.
+
+  To add one, use [[../scripts/github.sh][the github script]].

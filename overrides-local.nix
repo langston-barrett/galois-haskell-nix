@@ -59,7 +59,7 @@ in with haskellPackagesOld; {
 
 (with haskellPackagesOld; {
   # crucible            = alterSrc crucible (../crucible/crucible);
-  crucible-llvm       = alterSrc crucible-llvm (../crucible/crucible-llvm);
+  # crucible-llvm       = alterSrc crucible-llvm (../crucible/crucible-llvm);
   # crucible-llvm       = addDeps crucible-llvm (../crucible/crucible-llvm) [itanium-abi];
   # crucible-jvm        = alterSrc crucible-jvm (../crucible/crucible-jvm);
   # crucible-saw        = alterSrc crucible-saw (../crucible/crucible-saw);

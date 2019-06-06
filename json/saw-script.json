@@ -1,7 +1,7 @@
 {
   "url": "ssh://git@github.com/GaloisInc/saw-script",
-  "rev": "a4eb9325e23ba3dd5995329ed59513695eab07d7",
-  "date": "2019-05-28T17:06:01-07:00",
-  "sha256": "0vqbfzf8iy4maydkwgbhf1xjyqdxviii91cib8y3p2l7ar87n845",
+  "rev": "4df70ac2d2c027ae0219e0987787cb96a84e4051",
+  "date": "2019-06-05T09:13:04-07:00",
+  "sha256": "1dcz90j2jhfis3gia3b3wm91hh7xhcxdrbln2yirpv0flim7kcas",
   "fetchSubmodules": true
 }

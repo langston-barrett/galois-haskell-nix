@@ -1,7 +1,7 @@
 {
-  "url": "ssh://git@github.com/GaloisInc/jvm-parser",
-  "rev": "f37d40201271e3fa3ece8aa8346f87e4b211c82f",
-  "date": "2018-06-28T23:31:54-07:00",
-  "sha256": "19qg3zf4gn0lc2gl2gggjd6d033bddvpy80kkzv8msbijrhppg6i",
+  "url": "https://github.com/GaloisInc/jvm-parser",
+  "rev": "5368a84117dc28e0002003e8d8a491dd8756b421",
+  "date": "2019-06-17T09:51:18-07:00",
+  "sha256": "12iwi1izw3xvlk8m21pahv7z220b3b3zgcr502cbdnfim69mjfjq",
   "fetchSubmodules": false
 }
